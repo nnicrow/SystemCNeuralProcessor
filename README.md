@@ -11,7 +11,7 @@
 
 ## Authors
 
-- [Денис Григорьев](https://github.com/nnicrow)
-- [Мария Костецкая]()
-- [Дмитрий Вазанов]()
+- [MrDG5](https://github.com/MrDG5)
+- [Shi-Mari](https://github.com/Shi-Mari)
+- [Дмитрий Вазанов TODO]()
 - [nnicrow](https://github.com/nnicrow)
