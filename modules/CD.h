@@ -25,8 +25,16 @@ SC_MODULE(CD)
     sc_in<int> data_addr_s_i_memory; // адрес с которого начинаются данные для чтения с памяти
     sc_in<int> data_len_i_memory; // колличество элементов для чтения с памяти    
 
+    // core
+    sc_in<int> data_s_core;
+    sc_in<int> weight_s_core;
+    sc_in<int> data_count_core;
+    sc_in<int> res_s_core;
+    sc_in<bool> is_work_core;
+    sc_in<bool> is_last_layer_core;
+    sc_in<bool> is_busy_o_core;
+    
     /*
-    // Core
     sc_in<bool> interrupt_signal; // Сигнал прерывания от вычислительных ядер
     sc_out<int> target_address; // Адрес, куда нужно передать данные для вычислений
     sc_out<int> result_address; // Адрес, куда нужно поместить результат вычислений
