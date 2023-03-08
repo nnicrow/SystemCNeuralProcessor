@@ -1,6 +1,6 @@
 ﻿#include "../memory.h"
 
-void mem_layer_read()
+void memory::mem_layer_read()
 {
     if (rd_i.read()) {
         int layer = current_layer.read();
@@ -16,7 +16,7 @@ void mem_layer_read()
     }
 }
 
-void mem_layer_write()
+void memory::mem_layer_write()
 {
     if (wr_i.read()) {
         int layer = current_layer.read();
@@ -29,7 +29,7 @@ void mem_layer_write()
     }
 }
 
-void mem_weights_read()
+void memory::mem_weights_read()
 {
     if (rd_i.read()) {
         int layer = current_layer.read();
@@ -43,7 +43,7 @@ void mem_weights_read()
     }
 }
 
-void init()
+void memory::init()
 {
     if (current_layer.read() == 0) {
         layer_count_ = layer_count.read();
@@ -65,7 +65,7 @@ void init()
     }
 }
 
-void mem_weights_write()
+void memory::mem_weights_write()
 {
     if (wr_i.read() && current_layer.read() != 0) {
         int layer = current_layer.read() - 1;
