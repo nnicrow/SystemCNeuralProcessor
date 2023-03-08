@@ -7,10 +7,10 @@ SC_MODULE(memory)
     // входные сигналы
     sc_in<bool> clk;
     sc_in<int> layer_count;
+    sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
     
     sc_in<bool> wr_i; // сигнал записи данных
     sc_in<bool> rd_i; // сигнал чтения данных
-    sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
     sc_in<int> data_s_i; // началльный адрес данных слоя
     sc_in<int> data_len_i; // ширина данных
 
