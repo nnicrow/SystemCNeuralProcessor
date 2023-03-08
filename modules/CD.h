@@ -2,6 +2,12 @@
 #include <sysc/kernel/sc_module.h>
 
 #include "systemc.h"
+#include "../memory.h"
+
+#define LAYER_COUNT 3
+#define LAYER_FIRST 49
+#define LAYER_TWO 33
+#define LAYER_LAST 3
 
 SC_MODULE(CD)
 {
@@ -47,7 +53,8 @@ SC_MODULE(CD)
     void control_process();
 
     // чтение данных из файла TODO добавить параметр название файла, и то, как данные принимать
-    void read_data_from_file();
+    void read_data_from_file(const std::string file_name);
+    void read_weight_from_file_and_send_it(const std::string file_name);
 
     // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready && !load_data && !result_ready
     void init();

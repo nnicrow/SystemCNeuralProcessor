@@ -2,13 +2,15 @@
 
 #include "systemc.h"
 
+sc_buffer<float> buffer[1024];
+
 SC_MODULE(memory)
 {
     // входные сигналы
     sc_in<bool> clk;
     sc_in<int> layer_count;
     sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
-    
+
     sc_in<bool> wr_i; // сигнал записи данных
     sc_in<bool> rd_i; // сигнал чтения данных
     sc_in<int> data_s_i; // началльный адрес данных слоя
@@ -28,7 +30,7 @@ SC_MODULE(memory)
     void mem_weights_read();
 
     // инициализация. На данном этапе загружаются все веса, входной слой и колличество слоев layer_count
-    void init();
+    void process();
 
     // запись весов в weights_data_ под индексом номера слоя + 1
     void mem_weights_write();
@@ -42,7 +44,7 @@ SC_MODULE(memory)
         SC_METHOD(mem_layer_read)
         SC_METHOD(mem_layer_write)
         SC_METHOD(mem_weights_read)
-        SC_METHOD(init)
+        SC_METHOD(process)
     }
 
 private:

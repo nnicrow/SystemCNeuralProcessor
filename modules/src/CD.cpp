@@ -2,6 +2,8 @@
 #include "../memory.h"
 #include <fstream>
 #include <memory.h>
+
+
 void CD::control_process()
 {
     while (true) {
@@ -12,11 +14,22 @@ void CD::control_process()
     }
 }
 
-void CD::read_data_from_file()
+
+void CD::init()
 {
-    ifstream fin("data/weight.txt");
+    wr_o_memory.write(true);
+    read_weight_from_file_and_send_it("data/weight.txt");
+    rd_o_memory = false;
+    data_s_o_memory = 0;
+    data_len_o_memory = layer_count.read();
+    load_data = true;
+}
+
+void CD::read_data_from_file(const std::string file_name)
+{
+    ifstream fin(file_name);
     while (!fin.eof()) {
-        for (int i(0); i < 30; i++)
+        /*for (int i(0); i < 30; i++)
             for (int j(0); j < 49; j++)
             {
                 fin >> mem[i][j];
@@ -25,23 +38,36 @@ void CD::read_data_from_file()
             for (int j(0); j < 30; j++)
             {
                 fin >> mem[i + 30][j];
-            }
+            }*/
     }
 }
 
-void CD::init()
+void CD::read_weight_from_file_and_send_it(const std::string file_name)
 {
-    read_data_from_file();
-    wr_o_memory = true;
-    rd_o_memory = false;
-    data_s_o_memory = 0;
-    data_len_o_memory = layer_count.read();
-    load_data = true;
+    ifstream fin(file_name);
+    while (!fin.eof()) {
+        // TODO:
+        /*for (int i(0); i < 30; i++)
+            for (int j(0); j < 49; j++)
+            {
+                fin >> mem[i][j];
+            }
+        for (int i(0); i < 3; i++)
+            for (int j(0); j < 30; j++)
+            {
+                fin >> buffer[i + 30][j];
+            }*/
+    }
+    // TODO: отправка значений весов
+    // По размерности элементов в векторе отправляем через out()
+    // записывая в буфер под индексом данные данные и отправляем их
 }
 
 void CD::out()
 {
     // TODO: write data to output stream
+    // вы помещаем в data_s_o_memory начальный адрес нашей *****
+    // а в data_len_o_memory длину *****
 }
 
 void CD::memory_write()

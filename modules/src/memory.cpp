@@ -2,20 +2,23 @@
 
 void memory::mem_layer_read()
 {
-    /*if (rd_i.read()) {
+    if (rd_i.read())
+    {
         int layer = current_layer.read();
         int data_s = data_s_i.read();
         int data_len = data_len_i.read();
-
-        data_addr_s_o.write(data_s);
-        data_len_o.write(data_len);
-
-        for (int i = 0; i < data_len; ++i) {
-            layers_data_[layer][i] = layers_data_[layer][data_s + i];
+        
+        for (int i = data_s; i < data_s + data_len; ++i)
+        {
+            cout << buffer[data_s + i];
         }
-    }*/
+    }
 }
 
+/*
+data_addr_s_o.write(data_s);
+data_len_o.write(data_len);
+ */
 void memory::mem_layer_write()
 {
     /*if (wr_i.read()) {
@@ -43,7 +46,7 @@ void memory::mem_weights_read()
     }*/
 }
 
-void memory::init()
+void memory::process()
 {
     /*if (current_layer.read() == 0) {
         layer_count_ = layer_count.read();
