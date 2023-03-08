@@ -3,6 +3,7 @@
 #include "systemc.h"
 
 sc_buffer<float> buffer[1024];
+sc_signal<int> buffer_address;
 
 SC_MODULE(memory)
 {
@@ -15,6 +16,7 @@ SC_MODULE(memory)
     sc_in<bool> rd_i; // сигнал чтения данных
     sc_in<int> data_s_i; // началльный адрес данных слоя
     sc_in<int> data_len_i; // ширина данных
+    sc_in<bool> w_or_l_i; // ширина данных
 
     // выходные сигналы
     sc_out<int> data_addr_s_o; // началльный адрес данных слоя

@@ -2,7 +2,7 @@
 #include <sysc/kernel/sc_module.h>
 
 #include "systemc.h"
-#include "../memory.h"
+#include "memory.h"
 
 #define LAYER_COUNT 3
 #define LAYER_FIRST 49
@@ -27,6 +27,7 @@ SC_MODULE(CD)
     sc_out<bool> rd_o_memory; // сигнал на переход памяти в режим чтения
     sc_out<int> data_s_o_memory; // адрес с которого начинаются данные для запись в память
     sc_out<int> data_len_o_memory; // колличество элементов для запись в память
+    sc_out<bool> w_or_l_memory; // колличество элементов для запись в память
     // in
     sc_in<int> data_addr_s_i_memory; // адрес с которого начинаются данные для чтения с памяти
     sc_in<int> data_len_i_memory; // колличество элементов для чтения с памяти    
@@ -57,13 +58,14 @@ SC_MODULE(CD)
     void read_weight_from_file_and_send_it(const std::string file_name);
 
     // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready && !load_data && !result_ready
-    void init();
+    bool init();
 
     // отправка данных в поток вывода
     void out();
 
     // запись данных в память
-    void memory_write();
+    void memory_write(int data_s_o_memory, int data_len_o_memory);
+    void memory_write_off();
 
     // чтение из памяти
     void memory_read();

@@ -1,7 +1,7 @@
 #include "systemc.h"
+
 #include "modules/CD.h"
 #include "modules/core.h"
-#include "modules/memory.h"
 
 int sc_main(int argc, char* argv[])
 {
@@ -20,6 +20,7 @@ int sc_main(int argc, char* argv[])
     sc_signal<bool> rd_o_memory;
     sc_signal<int> data_s_o_memory;
     sc_signal<int> data_len_o_memory;
+    sc_signal<bool> w_or_l_i;
     // in
     sc_signal<int> data_addr_s_i_memory;
     sc_signal<int> data_len_i_memory;
@@ -73,6 +74,7 @@ int sc_main(int argc, char* argv[])
     CD.rd_o_memory(rd_o_memory);
     CD.data_s_o_memory(data_s_o_memory);
     CD.data_len_o_memory(data_len_o_memory);
+    CD.w_or_l_memory(w_or_l_i);
     CD.data_addr_s_i_memory(data_addr_s_i_memory);
     CD.data_len_i_memory(data_len_i_memory);
     
@@ -83,7 +85,8 @@ int sc_main(int argc, char* argv[])
     CD.is_work_core(is_work_core);
     CD.is_last_layer_core(is_last_layer_core);
     CD.is_busy_o_core(is_busy_o_core);
-    
+
+    data_ready.write(true);
     sc_start(sc_time(40000, SC_NS));
     return 0;
 }

@@ -1,13 +1,12 @@
 ﻿#include "../CD.h"
-#include "../memory.h"
 #include <fstream>
-#include <memory.h>
-
 
 void CD::control_process()
 {
-    while (true) {
-        if (data_ready && !load_data && !result_ready) {
+    while (true)
+    {
+        if (data_ready && !load_data && !result_ready)
+        {
             init();
         }
         wait();
@@ -15,56 +14,64 @@ void CD::control_process()
 }
 
 
-void CD::init()
+bool CD::init()
 {
-    wr_o_memory.write(true);
+    // ставим значение контролера адресов в буфере в 0
+    buffer_address.write(0);
     read_weight_from_file_and_send_it("data/weight.txt");
-    rd_o_memory = false;
-    data_s_o_memory = 0;
-    data_len_o_memory = layer_count.read();
-    load_data = true;
+    read_data_from_file("data/circle.txt");
+    while (true)
+    {
+        if (load_data)
+            return true;
+        wait();
+    }
 }
 
 void CD::read_data_from_file(const std::string file_name)
 {
+    w_or_l_memory.write(false);
+    int start_address = buffer_address.read();
+    buffer_address.write(start_address + LAYER_FIRST);
     ifstream fin(file_name);
-    while (!fin.eof()) {
-        /*for (int i(0); i < 30; i++)
-            for (int j(0); j < 49; j++)
-            {
-                fin >> mem[i][j];
-            }
-        for (int i(0); i < 3; i++)
-            for (int j(0); j < 30; j++)
-            {
-                fin >> mem[i + 30][j];
-            }*/
+    float var;
+    while (!fin.eof())
+    {
+        for (int i = 0; i < LAYER_FIRST; i++)
+        {
+            fin >> var;
+            buffer[i] = var;
+        }
+        memory_write(start_address, LAYER_FIRST);
     }
 }
 
 void CD::read_weight_from_file_and_send_it(const std::string file_name)
 {
+    w_or_l_memory.write(true);
+    int start_address = buffer_address.read();
+    buffer_address.write(start_address + LAYER_FIRST);
     ifstream fin(file_name);
-    while (!fin.eof()) {
-        for (int i = 0; i < LAYER_TWO; i++) {
-            for (int j = 0; j < LAYER_FIRST; j++) {
-                fin >> buffer[0][i][j]; // Read the weights from the file and store them in buffer[0]
-            }
+    float var;
+    while (!fin.eof())
+    {
+        for (int i = 0; i < LAYER_FIRST; i++)
+        {
+            fin >> var;
+            buffer[i] = var;
         }
-        for (int i = 0; i < LAYER_LAST; i++) {
-            for (int j = 0; j < LAYER_TWO; j++) {
-                fin >> buffer[1][i][j]; // Read the weights from the file and store them in buffer[1]
-            }
-        }
-    }
+        memory_write(start_address, LAYER_FIRST);
 
-    // Send the weights stored in buffer to the core
-    for (int i = 0; i < LAYER_COUNT - 1; i++) {
-        for (int j = 0; j < LAYER_LAST; j++) {
-            for (int k = 0; k < LAYER_FIRST; k++) {
-                out(buffer[i][j][k]); // Send the weights in buffer[i][j][k] to the core
-            }
+        start_address = buffer_address.read();
+        buffer_address.write(start_address + LAYER_TWO);
+        memory_write_off();
+        for (int i = 0; i < LAYER_TWO; i++)
+        {
+            fin >> var;
+            buffer[i] = var;
         }
+        memory_write(start_address, LAYER_TWO);
+        memory_write_off();
     }
 }
 
@@ -76,9 +83,13 @@ void CD::out()
     // а в data_len_o_memory длину *****
 }
 
-void CD::memory_write()
+void CD::memory_write(int data_s, int data_len)
 {
-    while (true) {
+    rd_o_memory.write(false);
+    data_s_o_memory.write(data_s);
+    data_len_o_memory.write(data_len);
+    wr_o_memory.write(true);
+    /*while (true) {
         wait();
         if (wr_o_memory) {
             for (int i = 0; i < data_len_o_memory.read(); i++) {
@@ -86,12 +97,19 @@ void CD::memory_write()
             }
             wr_o_memory = false;
         }
-    }
+    }*/
+}
+
+void CD::memory_write_off()
+{
+    wr_o_memory.write(false);
 }
 
 void CD::memory_read()
 {
-    while (true) {
+    wr_o_memory.write(false);
+    rd_o_memory.write(true);
+    /*while (true) {
         wait();
         if (rd_o_memory) {
             for (int i = 0; i < data_len_i_memory.read(); i++) {
@@ -99,5 +117,5 @@ void CD::memory_read()
             }
             rd_o_memory = false;
         }
-    }
+    }*/
 }
