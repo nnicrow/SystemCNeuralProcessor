@@ -44,33 +44,25 @@ void CD::read_data_from_file(const std::string file_name)
 
 void CD::read_weight_from_file_and_send_it(const std::string file_name)
 {
-    // Open the file for reading
-    std::ifstream fin(file_name);
-
-    // Loop through the file until the end is reached
+    ifstream fin(file_name);
     while (!fin.eof()) {
-        // Read the weight values from the file
-        std::vector<int> weights(LAYER_FIRST * LAYER_TWO);
-
-        for (int i = 0; i < LAYER_FIRST * LAYER_TWO; ++i) {
-            fin >> weights[i];
+        for (int i = 0; i < LAYER_TWO; i++) {
+            for (int j = 0; j < LAYER_FIRST; j++) {
+                fin >> buffer[0][i][j]; // Read the weights from the file and store them in buffer[0]
+            }
         }
+        for (int i = 0; i < LAYER_LAST; i++) {
+            for (int j = 0; j < LAYER_TWO; j++) {
+                fin >> buffer[1][i][j]; // Read the weights from the file and store them in buffer[1]
+            }
+        }
+    }
 
-        // Send the weight values to the memory module
-        int address = 0;
-
-        for (int i = 0; i < LAYER_FIRST; ++i) {
-            for (int j = 0; j < LAYER_TWO; ++j) {
-                // Write the weight value to memory
-                wr_o_memory = true;
-                rd_o_memory = false;
-                data_s_o_memory = address;
-                data_len_o_memory = 1;
-                memory_write();
-
-                // Send the weight value to the memory module
-                out();
-                address++;
+    // Send the weights stored in buffer to the core
+    for (int i = 0; i < LAYER_COUNT - 1; i++) {
+        for (int j = 0; j < LAYER_LAST; j++) {
+            for (int k = 0; k < LAYER_FIRST; k++) {
+                out(buffer[i][j][k]); // Send the weights in buffer[i][j][k] to the core
             }
         }
     }
