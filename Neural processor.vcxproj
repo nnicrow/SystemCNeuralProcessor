@@ -255,11 +255,11 @@
     <Content Include="data\weight.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IOController.h" />
     <ClInclude Include="modules\bus.h" />
     <ClInclude Include="modules\CD.h" />
     <ClInclude Include="modules\core.h" />
     <ClInclude Include="modules\memory.h" />
-    <ClInclude Include="modules\params.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
