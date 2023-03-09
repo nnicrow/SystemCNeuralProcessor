@@ -20,7 +20,7 @@ SC_MODULE(core)
     sc_out<bool> is_busy_o; // занятость ядра
 
     core_mode write_or_read;
-
+    
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
     

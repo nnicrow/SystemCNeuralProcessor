@@ -2,5 +2,8 @@
 
 void core::control_process()
 {
-    
+    while (true)
+    {
+        wait();
+    }
 }
