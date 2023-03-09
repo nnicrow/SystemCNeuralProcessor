@@ -23,7 +23,8 @@ void CD::control_process()
         for (int i = 0; i < LAYER_FIRST; i++)
         {
             fin >> var;
-            buffer_cd[i] = var;
+            buffer_cd[i].write(var);
+            wait();
         }
         memory_write(start_address, LAYER_FIRST);
         wait();
