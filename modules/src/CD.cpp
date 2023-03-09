@@ -64,6 +64,9 @@ void CD::control_process()
     
     memory_write_off();
     wait();
+    memory_read();
+    wait();
+    memory_read_off();
 }
 
 void CD::out()
@@ -90,4 +93,9 @@ void CD::memory_read()
 {
     wr_o_memory.write(false);
     rd_o_memory.write(true);
+}
+void CD::memory_read_off()
+{
+    wr_o_memory.write(true);
+    rd_o_memory.write(false);
 }

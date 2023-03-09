@@ -2,7 +2,13 @@
 
 void memory::mem_layer_read()
 {
-	
+	int data_len = layers_data_[current_layer.read()].size();
+	int start_address = data_addr_s_o.read();
+
+	for (int i = 0; i < data_len; ++i) {
+		buffer_memory[start_address + i] = layers_data_[current_layer.read()][i];
+	}
+	buffer_address_memory.write(start_address + data_len_o.read());
 }
 
 void memory::mem_layer_write()
@@ -16,17 +22,18 @@ void memory::mem_layer_write()
 	
 	for (int i = 0; i < data_len; ++i) {
 		layers_data_[current_layer.read()][i] = buffer_cd[start_address + i].read();
-		cout << layers_data_[current_layer.read()][i] << endl;
 	}
 }
 
 void memory::mem_weights_read()
 {
 	int data_len = weights_data_[current_layer.read()].size();
-	
+	int start_address = data_addr_s_o.read();
+
 	for (int i = 0; i < data_len; ++i) {
-		buffer_memory[i] = weights_data_[current_layer.read()][i];
+		buffer_memory[start_address + i] = weights_data_[current_layer.read()][i];
 	}
+	buffer_address_memory.write(start_address + data_len_o.read());
 }
 
 void memory::mem_weights_write()

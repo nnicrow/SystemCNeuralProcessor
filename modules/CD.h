@@ -66,7 +66,7 @@ SC_MODULE(CD)
     // запись данных в память
     void memory_write(int data_s_o_memory, int data_len_o_memory);
     void memory_write_off();
-
+    void memory_read_off();
     // чтение из памяти
     void memory_read();
 
