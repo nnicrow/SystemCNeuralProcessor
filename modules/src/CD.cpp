@@ -13,7 +13,7 @@ void CD::control_process()
     }
     cout << "Initialized start" << endl;
     buffer_address_cd.write(0);
-    w_or_l_memory.initialize(true);
+    w_or_l.initialize(true);
 
     // старт чтения весов
     int start_address = buffer_address_cd.read();
@@ -46,7 +46,7 @@ void CD::control_process()
     }
     memory_write_off();
     wait();
-    w_or_l_memory.write(false);
+    w_or_l.write(false);
     start_address = buffer_address_cd.read();
     buffer_address_cd.write(start_address + LAYER_FIRST);
     ifstream fin2("data/circle.txt");

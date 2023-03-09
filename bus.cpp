@@ -24,7 +24,7 @@ int sc_main(int argc, char* argv[])
     sc_signal<bool> rd_o_memory;
     sc_signal<int> data_s_o_memory;
     sc_signal<int> data_len_o_memory;
-    sc_signal<bool> wr_o_l_memory;
+    sc_signal<bool> wr_o_l;
     // in
     sc_signal<int> data_addr_s_i_memory;
     sc_signal<int> data_len_i_memory;
@@ -54,7 +54,7 @@ int sc_main(int argc, char* argv[])
     memory.data_len_i(data_len_o_memory);
     memory.data_addr_s_o(data_addr_s_i_memory);
     memory.data_len_o(data_len_i_memory);
-    memory.w_or_l_i(wr_o_l_memory);
+    memory.w_or_l_i(wr_o_l);
     memory.buffer_address_cd(buffer_address_cd);
     memory.buffer_address_memory(buffer_address_memory);
     memory.load_data(load_data);
@@ -67,7 +67,7 @@ int sc_main(int argc, char* argv[])
     // Core
     core.clk(clk);
     core.data_s(data_s_core);
-    core.weight_s(weight_s_core);
+    core.w_or_l(wr_o_l);
     core.data_count(data_count_core);
     core.res_s(res_s_core);
     core.is_work(is_work_core);
@@ -96,7 +96,7 @@ int sc_main(int argc, char* argv[])
     CD.data_len_o_memory(data_len_o_memory);
     CD.data_addr_s_i_memory(data_addr_s_i_memory);
     CD.data_len_i_memory(data_len_i_memory);
-    CD.w_or_l_memory(wr_o_l_memory);
+    CD.w_or_l(wr_o_l);
 
     CD.data_s_core(data_s_core);
     CD.weight_s_core(weight_s_core);
