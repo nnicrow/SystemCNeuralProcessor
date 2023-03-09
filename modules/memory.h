@@ -1,9 +1,7 @@
 ﻿#pragma once
 
+#include "CD.h"
 #include "systemc.h"
-
-sc_buffer<float> buffer[1024];
-sc_signal<int> buffer_address;
 
 SC_MODULE(memory)
 {
@@ -11,7 +9,11 @@ SC_MODULE(memory)
     sc_in<bool> clk;
     sc_in<int> layer_count;
     sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
-
+    sc_in<float> buffer_cd[BOFFER_SIZE];
+    sc_out<float> buffer_memory[BOFFER_SIZE];
+    sc_in<int> buffer_address_cd;
+    sc_out<int> buffer_address_memory;
+    
     sc_in<bool> wr_i; // сигнал записи данных
     sc_in<bool> rd_i; // сигнал чтения данных
     sc_in<int> data_s_i; // началльный адрес данных слоя
@@ -30,10 +32,6 @@ SC_MODULE(memory)
     void mem_layer_write();
     // чтение весов в weights_data_ под индексом номера слоя + 1
     void mem_weights_read();
-
-    // инициализация. На данном этапе загружаются все веса, входной слой и колличество слоев layer_count
-    void process();
-
     // запись весов в weights_data_ под индексом номера слоя + 1
     void mem_weights_write();
 
@@ -43,10 +41,10 @@ SC_MODULE(memory)
     SC_CTOR(memory)
     {
         sensitive << clk.pos();
-        SC_METHOD(mem_layer_read)
-        SC_METHOD(mem_layer_write)
-        SC_METHOD(mem_weights_read)
-        SC_METHOD(process)
+        SC_THREAD(mem_layer_read)
+        SC_THREAD(mem_layer_write)
+        SC_THREAD(mem_weights_read)
+        SC_THREAD(mem_weights_write)
     }
 
 private:
@@ -54,5 +52,4 @@ private:
     std::vector<std::vector<float>> weights_data_;
     std::vector<std::vector<float>> layers_data_;
     int layer_count_;
-    int result_;
 };

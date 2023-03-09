@@ -1,13 +1,14 @@
 ﻿#pragma once
 #include <sysc/kernel/sc_module.h>
 
+#include "CD.h"
 #include "systemc.h"
-#include "memory.h"
 
 #define LAYER_COUNT 3
 #define LAYER_FIRST 49
 #define LAYER_TWO 33
 #define LAYER_LAST 3
+#define BOFFER_SIZE 512
 
 SC_MODULE(CD)
 {
@@ -15,7 +16,11 @@ SC_MODULE(CD)
     sc_in<bool> clk; // Тактовый сигнал
     sc_in<int> layer_count; // колличество слоев
     sc_out<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
-
+    sc_out<float> buffer_cd[BOFFER_SIZE];
+    sc_in<float> buffer_memory[BOFFER_SIZE];
+    sc_out<int> buffer_address_cd;
+    sc_in<int> buffer_address_memory;
+    
     // CD
     sc_in<bool> data_ready; // Флаг готовности данных на внешнем накопителе
     sc_out<bool> load_data; // Сигнал загрузки данных из внешнего накопителя в общую память
@@ -69,7 +74,7 @@ SC_MODULE(CD)
 
     // чтение из памяти
     void memory_read();
-    
+
     // Конструктор модуля
     SC_CTOR(CD)
     {
