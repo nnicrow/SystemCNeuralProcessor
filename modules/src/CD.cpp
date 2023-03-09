@@ -12,7 +12,7 @@ void CD::control_process()
         else break;
     }
     cout << "Initialized start" << endl;
-    buffer_address_cd.initialize(0);
+    buffer_address_cd.write(0);
     w_or_l_memory.initialize(true);
 
     // старт чтения весов
@@ -38,7 +38,7 @@ void CD::control_process()
         for (int i = 0; i < LAYER_TWO; ++i)
         {
             fin >> var;
-            buffer_cd[i] = var;
+            buffer_cd[start_address + i].write(var);
         }
         memory_write(start_address, LAYER_TWO);
         wait();
@@ -46,7 +46,6 @@ void CD::control_process()
     }
     memory_write_off();
     wait();
-    cout << "123" << endl;
     w_or_l_memory.write(false);
     start_address = buffer_address_cd.read();
     buffer_address_cd.write(start_address + LAYER_FIRST);
@@ -55,8 +54,8 @@ void CD::control_process()
     {
         for (int i = 0; i < LAYER_FIRST; ++i)
         {
-            fin >> var;
-            buffer_cd[i] = var;
+            fin2 >> var;
+            buffer_cd[start_address + i].write(var);
         }
         memory_write(start_address, LAYER_FIRST);
         wait();
@@ -65,7 +64,6 @@ void CD::control_process()
     
     memory_write_off();
     wait();
-    cout << "1234" << endl;
 }
 
 void CD::out()
