@@ -34,7 +34,7 @@ void CD::control_process()
 
         memory_write_off();
         wait();
-        
+
         for (int i = 0; i < LAYER_TWO; ++i)
         {
             fin >> var;
@@ -61,7 +61,7 @@ void CD::control_process()
         wait();
         break;
     }
-    
+
     memory_write_off();
     wait();
     memory_read();
@@ -94,8 +94,8 @@ void CD::memory_read()
     wr_o_memory.write(false);
     rd_o_memory.write(true);
 }
+
 void CD::memory_read_off()
 {
-    wr_o_memory.write(true);
     rd_o_memory.write(false);
 }
