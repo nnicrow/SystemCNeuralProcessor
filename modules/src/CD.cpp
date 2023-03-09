@@ -3,52 +3,20 @@
 
 void CD::control_process()
 {
-    init();
-    cout << "Initialized" << endl;
-    if (!is_init)
-        wait();
-}
-
-void CD::init()
-{
-    if (!data_ready || is_init)
-        return;
-    // ставим значение контролера адресов в буфере в 0
-    buffer_address_cd.write(0);
-    read_weight_from_file_and_send_it("data/weight.txt");
-    read_data_from_file("data/circle.txt");
-
-    if (!load_data)
-        return;
-
-    is_init = true;
-}
-
-void CD::read_data_from_file(const std::string file_name)
-{
-    w_or_l_memory.write(false);
-    int start_address = buffer_address_cd.read();
-    buffer_address_cd.write(start_address + LAYER_FIRST);
-    ifstream fin(file_name);
-    float var;
-    while (!fin.eof())
+    // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready
+    while (true)
     {
-        for (int i = 0; i < LAYER_FIRST; i++)
-        {
-            fin >> var;
-            buffer_cd[i] = var;
-        }
-        memory_write(start_address, LAYER_FIRST);
-        break;
+        if (!data_ready) wait();
+        else break;
     }
-}
+    cout << "Initialized start" << endl;
+    buffer_address_cd.initialize(0);
+    w_or_l_memory.initialize(true);
 
-void CD::read_weight_from_file_and_send_it(const std::string file_name)
-{
-    w_or_l_memory.write(true);
+    // старт чтения весов
     int start_address = buffer_address_cd.read();
     buffer_address_cd.write(start_address + LAYER_FIRST);
-    ifstream fin(file_name);
+    ifstream fin("data/weight.txt");
     float var;
     while (!fin.eof())
     {
@@ -58,21 +26,45 @@ void CD::read_weight_from_file_and_send_it(const std::string file_name)
             buffer_cd[i] = var;
         }
         memory_write(start_address, LAYER_FIRST);
-
+        wait();
         start_address = buffer_address_cd.read();
         buffer_address_cd.write(start_address + LAYER_TWO);
+
         memory_write_off();
+        wait();
+        
         for (int i = 0; i < LAYER_TWO; i++)
         {
             fin >> var;
             buffer_cd[i] = var;
         }
         memory_write(start_address, LAYER_TWO);
-        memory_write_off();
+        wait();
         break;
     }
+    memory_write_off();
+    wait();
+    cout << "123" << endl;
+    w_or_l_memory.write(false);
+    start_address = buffer_address_cd.read();
+    buffer_address_cd.write(start_address + LAYER_FIRST);
+    ifstream fin2("data/circle.txt");
+    while (!fin2.eof())
+    {
+        for (int i = 0; i < LAYER_FIRST; i++)
+        {
+            fin >> var;
+            buffer_cd[i] = var;
+        }
+        memory_write(start_address, LAYER_FIRST);
+        wait();
+        break;
+    }
+    
+    memory_write_off();
+    wait();
+    cout << "1234" << endl;
 }
-
 
 void CD::out()
 {

@@ -59,11 +59,6 @@ SC_MODULE(CD)
     void control_process();
 
     // чтение данных из файла TODO добавить параметр название файла, и то, как данные принимать
-    void read_data_from_file(std::string file_name);
-    void read_weight_from_file_and_send_it(std::string file_name);
-
-    // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready && !load_data && !result_ready
-    void init();
 
     // отправка данных в поток вывода
     void out();
@@ -78,12 +73,10 @@ SC_MODULE(CD)
     // Конструктор модуля
     SC_CTOR(CD)
     {
-        SC_METHOD(out);
-        // Запускаем процессор, отвечающий за управление устройством
         SC_THREAD(control_process)
-        sensitive << clk;
+        sensitive << clk.pos();
     }
 
 private:
-    bool is_init;
+    bool is_init = false;
 };

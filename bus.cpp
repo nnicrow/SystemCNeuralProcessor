@@ -107,6 +107,6 @@ int sc_main(int argc, char* argv[])
     CD.is_busy_o_core(is_busy_o_core);
 
     data_ready.write(true);
-    sc_start(sc_time(40000, SC_NS));
+    sc_start(sc_time(4000, SC_NS));
     return 0;
 }

@@ -36,6 +36,6 @@ void memory::process()
         
         if (wr_i.read() && w_or_l_i.read())
             mem_weights_write();
-        wait(10);
+        wait();
     }
 }
