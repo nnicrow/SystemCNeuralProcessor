@@ -36,16 +36,15 @@ SC_MODULE(memory)
     // запись весов в weights_data_ под индексом номера слоя + 1
     void mem_weights_write();
 
+    void process();
+
     // если current_layer = 0, то инициализация данных, загрузка
     // layer_count и mem_weights_write должны работать только в данном случае
 
     SC_CTOR(memory)
-    {
+    {        
+        SC_THREAD(process)
         sensitive << clk.pos();
-        SC_THREAD(mem_layer_read)
-        SC_THREAD(mem_layer_write)
-        SC_THREAD(mem_weights_read)
-        SC_THREAD(mem_weights_write)
     }
 
 private:

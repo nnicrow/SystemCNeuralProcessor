@@ -3,29 +3,25 @@
 
 void CD::control_process()
 {
-    while (true)
-    {
-        if (!init())
-            wait();
-    }
+    init();
+    cout << "Initialized" << endl;
+    if (!is_init)
+        wait();
 }
 
-bool CD::init()
+void CD::init()
 {
-    if (!data_ready || load_data || result_ready)
-        return false;
+    if (!data_ready || is_init)
+        return;
     // ставим значение контролера адресов в буфере в 0
     buffer_address_cd.write(0);
     read_weight_from_file_and_send_it("data/weight.txt");
-    wait();
     read_data_from_file("data/circle.txt");
-    wait();
-    while (true)
-    {
-        if (load_data)
-            return true;
-        return false;
-    }
+
+    if (!load_data)
+        return;
+
+    is_init = true;
 }
 
 void CD::read_data_from_file(const std::string file_name)
@@ -43,6 +39,7 @@ void CD::read_data_from_file(const std::string file_name)
             buffer_cd[i] = var;
         }
         memory_write(start_address, LAYER_FIRST);
+        break;
     }
 }
 
@@ -61,7 +58,7 @@ void CD::read_weight_from_file_and_send_it(const std::string file_name)
             buffer_cd[i] = var;
         }
         memory_write(start_address, LAYER_FIRST);
-        
+
         start_address = buffer_address_cd.read();
         buffer_address_cd.write(start_address + LAYER_TWO);
         memory_write_off();
@@ -72,6 +69,7 @@ void CD::read_weight_from_file_and_send_it(const std::string file_name)
         }
         memory_write(start_address, LAYER_TWO);
         memory_write_off();
+        break;
     }
 }
 

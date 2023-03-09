@@ -20,12 +20,12 @@ SC_MODULE(CD)
     sc_in<float> buffer_memory[BOFFER_SIZE];
     sc_out<int> buffer_address_cd;
     sc_in<int> buffer_address_memory;
-    
+
     // CD
     sc_in<bool> data_ready; // Флаг готовности данных на внешнем накопителе
     sc_in<bool> load_data; // Сигнал загрузки данных из внешнего накопителя в общую память
     sc_out<bool> result_ready; // Флаг готовности результата вычисления НС
-    
+
     // memory
     // out
     sc_out<bool> wr_o_memory; // сигнал на переход памяти в режим записи
@@ -45,7 +45,7 @@ SC_MODULE(CD)
     sc_in<bool> is_work_core;
     sc_in<bool> is_last_layer_core;
     sc_in<bool> is_busy_o_core;
-    
+
     /*
     sc_in<bool> interrupt_signal; // Сигнал прерывания от вычислительных ядер
     sc_out<int> target_address; // Адрес, куда нужно передать данные для вычислений
@@ -54,16 +54,16 @@ SC_MODULE(CD)
     sc_in<bool> unload_data; // Сигнал выгрузки данных из общей памяти на вычислительное ядро
     bool is_busy = false; // Флаг занятости вычислительных ядер
     */
-    
+
     // Процессор, отвечающий за управление устройством
     void control_process();
 
     // чтение данных из файла TODO добавить параметр название файла, и то, как данные принимать
-    void read_data_from_file(const std::string file_name);
-    void read_weight_from_file_and_send_it(const std::string file_name);
+    void read_data_from_file(std::string file_name);
+    void read_weight_from_file_and_send_it(std::string file_name);
 
     // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready && !load_data && !result_ready
-    bool init();
+    void init();
 
     // отправка данных в поток вывода
     void out();
@@ -78,8 +78,12 @@ SC_MODULE(CD)
     // Конструктор модуля
     SC_CTOR(CD)
     {
+        SC_METHOD(out);
         // Запускаем процессор, отвечающий за управление устройством
-        SC_THREAD(control_process);
-        sensitive << clk.pos(); // Привязываем процесс к положительному фронту тактового сигнала
+        SC_THREAD(control_process)
+        sensitive << clk;
     }
+
+private:
+    bool is_init;
 };
