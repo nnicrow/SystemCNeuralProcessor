@@ -16,10 +16,10 @@ SC_MODULE(CD)
     sc_in<bool> clk; // Тактовый сигнал
     sc_out<int> layer_count; // колличество слоев
     sc_out<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
-    sc_out<float> buffer_cd[BOFFER_SIZE];
-    sc_in<float> buffer_memory[BOFFER_SIZE];
-    sc_out<int> buffer_address_cd;
-    sc_in<int> buffer_address_memory;
+    sc_out<float> buffer_cd[BOFFER_SIZE]; //буфер для СД
+    sc_in<float> buffer_memory[BOFFER_SIZE]; //буфер памяти
+    sc_out<int> buffer_address_cd; //адрес буфера СД
+    sc_in<int> buffer_address_memory; //адрес буфера памяти
 
     // CD
     sc_in<bool> data_ready; // Флаг готовности данных на внешнем накопителе
