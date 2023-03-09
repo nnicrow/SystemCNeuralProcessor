@@ -27,9 +27,6 @@ void memory::mem_weights_write()
 		weights[start_address + i] = buffer_cd[i];
 	}
 
-	// Устанавливаем выходные сигналы
-	data_addr_s_o.write(start_address);
-	data_len_o.write(data_len);
 }
 
 void memory::process()
