@@ -14,11 +14,12 @@ bool CD::init()
 {
     if (!data_ready || load_data || result_ready)
         return false;
-    
     // ставим значение контролера адресов в буфере в 0
     buffer_address_cd.write(0);
     read_weight_from_file_and_send_it("data/weight.txt");
+    wait();
     read_data_from_file("data/circle.txt");
+    wait();
     while (true)
     {
         if (load_data)
@@ -60,7 +61,7 @@ void CD::read_weight_from_file_and_send_it(const std::string file_name)
             buffer_cd[i] = var;
         }
         memory_write(start_address, LAYER_FIRST);
-
+        
         start_address = buffer_address_cd.read();
         buffer_address_cd.write(start_address + LAYER_TWO);
         memory_write_off();

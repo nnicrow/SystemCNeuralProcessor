@@ -13,6 +13,7 @@ SC_MODULE(memory)
     sc_out<float> buffer_memory[BOFFER_SIZE];
     sc_in<int> buffer_address_cd;
     sc_out<int> buffer_address_memory;
+    sc_out<bool> load_data;
     
     sc_in<bool> wr_i; // сигнал записи данных
     sc_in<bool> rd_i; // сигнал чтения данных

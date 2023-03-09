@@ -57,6 +57,7 @@ int sc_main(int argc, char* argv[])
     memory.w_or_l_i(wr_o_l_memory);
     memory.buffer_address_cd(buffer_address_cd);
     memory.buffer_address_memory(buffer_address_memory);
+    memory.load_data(load_data);
     for (int i = 0; i < BOFFER_SIZE; i++)
     {
         memory.buffer_cd[i](buffer_cd[i]);
@@ -105,6 +106,7 @@ int sc_main(int argc, char* argv[])
     CD.is_last_layer_core(is_last_layer_core);
     CD.is_busy_o_core(is_busy_o_core);
 
+    data_ready.write(true);
     sc_start(sc_time(40000, SC_NS));
     return 0;
 }
