@@ -14,7 +14,7 @@ SC_MODULE(CD)
 {
     // global
     sc_in<bool> clk; // Тактовый сигнал
-    sc_in<int> layer_count; // колличество слоев
+    sc_out<int> layer_count; // колличество слоев
     sc_out<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
     sc_out<float> buffer_cd[BOFFER_SIZE];
     sc_in<float> buffer_memory[BOFFER_SIZE];

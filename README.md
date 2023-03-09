@@ -2,6 +2,10 @@
 
 Тут будет описание
 
+## Descriprion
+
+![Описание проекта](https://cs10.pikabu.ru/post_img/2019/06/07/7/1559905588140454390.jpg)
+
 ## Acknowledgements
 
 - [GitHub SystemC](https://github.com/accellera-official/systemc)
@@ -13,5 +17,5 @@
 
 - [MrDG5](https://github.com/MrDG5)
 - [Shi-Mari](https://github.com/Shi-Mari)
-- [Дмитрий Вазанов TODO]()
+- [Дмитрий Вазанов](https://github.com/dontcallmeshurley)
 - [nnicrow](https://github.com/nnicrow)

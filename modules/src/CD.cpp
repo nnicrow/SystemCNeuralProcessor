@@ -3,6 +3,8 @@
 
 void CD::control_process()
 {
+    layer_count.initialize(LAYER_COUNT);
+    current_layer.initialize(0);
     // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready
     while (true)
     {
@@ -20,10 +22,10 @@ void CD::control_process()
     float var;
     while (!fin.eof())
     {
-        for (int i = 0; i < LAYER_FIRST; i++)
+        for (int i = 0; i < LAYER_FIRST; ++i)
         {
             fin >> var;
-            buffer_cd[i] = var;
+            buffer_cd[i].write(var);
         }
         memory_write(start_address, LAYER_FIRST);
         wait();
@@ -33,7 +35,7 @@ void CD::control_process()
         memory_write_off();
         wait();
         
-        for (int i = 0; i < LAYER_TWO; i++)
+        for (int i = 0; i < LAYER_TWO; ++i)
         {
             fin >> var;
             buffer_cd[i] = var;
@@ -51,7 +53,7 @@ void CD::control_process()
     ifstream fin2("data/circle.txt");
     while (!fin2.eof())
     {
-        for (int i = 0; i < LAYER_FIRST; i++)
+        for (int i = 0; i < LAYER_FIRST; ++i)
         {
             fin >> var;
             buffer_cd[i] = var;

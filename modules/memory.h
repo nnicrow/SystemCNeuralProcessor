@@ -17,9 +17,9 @@ SC_MODULE(memory)
     
     sc_in<bool> wr_i; // сигнал записи данных
     sc_in<bool> rd_i; // сигнал чтения данных
+    sc_in<bool> w_or_l_i; // истина, если веса. ложь, если слои
     sc_in<int> data_s_i; // началльный адрес данных слоя
     sc_in<int> data_len_i; // ширина данных
-    sc_in<bool> w_or_l_i; // ширина данных
 
     // выходные сигналы
     sc_out<int> data_addr_s_o; // началльный адрес данных слоя
