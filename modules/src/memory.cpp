@@ -2,40 +2,52 @@
 
 void memory::mem_layer_read()
 {
-    cout << "1" << endl;
 }
 
 void memory::mem_layer_write()
 {
-    cout << "2" << endl;
 }
 
 void memory::mem_weights_read()
 {
-    cout << "3" << endl;
+
 }
 
 void memory::mem_weights_write()
 {
-    cout << "4" << endl;
+
+	int start_address = data_s_i.read();
+	int data_len = data_len_i.read();
+
+	// Выбираем вектор весов для текущего слоя (layer)
+	std::vector<float>& weights = weights_data_.at(current_layer.read() );
+
+	// Записываем данные из буфера CD в вектор весов
+	for (int i = 0; i < data_len; i++) {
+		weights[start_address + i] = buffer_cd[i];
+	}
+
+	// Устанавливаем выходные сигналы
+	data_addr_s_o.write(start_address);
+	data_len_o.write(data_len);
 }
 
 void memory::process()
 {
-    while (true)
-    {
-        cout << "process" << endl;
-        if (rd_i.read() && !w_or_l_i.read())
-            mem_layer_read();
-        
-        if (wr_i.read() && !w_or_l_i.read())
-            mem_layer_write();
-        
-        if (rd_i.read() && w_or_l_i.read())
-            mem_weights_read();
-        
-        if (wr_i.read() && w_or_l_i.read())
-            mem_weights_write();
-        wait();
-    }
+	weights_data_.resize(layer_count.read());
+	while (true)
+	{
+		if (rd_i.read() && !w_or_l_i.read())
+			mem_layer_read();
+
+		if (wr_i.read() && !w_or_l_i.read())
+			mem_layer_write();
+
+		if (rd_i.read() && w_or_l_i.read())
+			mem_weights_read();
+
+		if (wr_i.read() && w_or_l_i.read())
+			mem_weights_write();
+		wait();
+	}
 }
