@@ -25,7 +25,6 @@ void memory::mem_weights_write()
 	// Записываем данные из буфера CD в вектор весов
 	for (int i = 0; i < data_len; i++) {
 		weights[start_address + i] = buffer_cd[i];
-		buffer_memory[i + start_address] = buffer_cd[i];
 	}
 
 	// Устанавливаем выходные сигналы
