@@ -12,7 +12,6 @@ void core::read(int* data, int start_addr, int len)
 {
 }
 
-int core::write(std::vector<float> &data, int len)
+void core::write(std::vector<float> &data, int start_address)
 {
-    return 0;
 }

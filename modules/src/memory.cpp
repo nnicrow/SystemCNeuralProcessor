@@ -5,7 +5,10 @@ void memory::read(int* data, int start_addr, int len)
 	
 }
 
-int memory::write(std::vector<float> &data, int len)
+void memory::write(std::vector<float> &data, int start_address)
 {
-	return 0;
+	for (int i = 0; i < data.size(); ++i)
+	{
+		memory_data_[start_address + i] = data[i];
+	}
 }

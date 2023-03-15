@@ -22,6 +22,6 @@ public:
 private:
     std::vector<int> address_;
     int address_count_;
-    int last_address_;
+    int last_memory_busy_address_;
     const int layer_count_ = LAYER_COUNT;
 };

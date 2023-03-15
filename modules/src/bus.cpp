@@ -4,7 +4,6 @@ void bus::read(int* data, int start_addr, int len)
 {
 }
 
-int bus::write(std::vector<float> &data, int len)
+void bus::write(std::vector<float> &data, int start_address)
 {
-    return 0;
 }
