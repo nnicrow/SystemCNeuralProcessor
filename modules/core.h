@@ -17,7 +17,7 @@ public:
 
     void read(int* data, int start_addr, int len) override;
     
-    void write(int* data, int start_addr, int len) override;;
+    int write(std::vector<float> &data) override;;
 
     SC_CTOR(core)
     {

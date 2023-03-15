@@ -6,5 +6,5 @@
 #define LAYER_FIRST 49
 #define LAYER_TWO 33
 #define LAYER_LAST 3
-#define BOFFER_SIZE 512
-#define CORE_COUNT 512
+#define MEM_SIZE 2048
+#define CORE_COUNT 3

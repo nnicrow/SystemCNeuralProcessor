@@ -10,16 +10,14 @@ public:
     
     void read(int* data, int start_addr, int len) override;
 
-    void write(int* data, int start_addr, int len) override;
+    int write(std::vector<float> &data) override;
 
     SC_CTOR(memory)
     {
+        memory_data_.resize(MEM_SIZE);
         sensitive << clk.pos();
     }
 
 private:
-    // weights excluding first layer from 1..layer_count
-    std::vector<std::vector<float>> weights_data_;
-    std::vector<std::vector<float>> layers_data_;
-    int layer_count_;
+    std::vector<float> memory_data_;
 };
