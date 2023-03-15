@@ -2,11 +2,15 @@
 #include "modules/CD.h"
 #include "modules/core.h"
 #include "modules/memory.h"
+#include "modules/bus.h"
+#include "config.h"
 
 int sc_main(int argc, char* argv[])
 {
+    bus bus("bus");
     CD CD("ControlDevice");
     core core("core");
+    
     memory memory("memory");
 
     // global parameters
@@ -17,7 +21,7 @@ int sc_main(int argc, char* argv[])
     sc_signal<int> buffer_address_cd;
     sc_signal<float> buffer_memory[BOFFER_SIZE];
     sc_signal<int> buffer_address_memory;
-    
+
     // memory
     // out
     sc_signal<bool> wr_o_memory;
@@ -42,6 +46,9 @@ int sc_main(int argc, char* argv[])
     sc_signal<bool> is_work_core;
     sc_signal<bool> is_last_layer_core;
     sc_signal<bool> is_busy_o_core;
+
+    // bus
+    bus.clk(clk);
 
     // memory
     memory.clk(clk);

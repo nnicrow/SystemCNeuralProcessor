@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include <sysc/kernel/sc_module.h>
 
-#include "CD.h"
-#include "systemc.h"
+#include "../config.h"
 
 enum class core_mode { read, write, count, await };
 

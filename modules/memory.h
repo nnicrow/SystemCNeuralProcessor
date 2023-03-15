@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "CD.h"
-#include "systemc.h"
+#include "../config.h"
 
 SC_MODULE(memory)
 {
