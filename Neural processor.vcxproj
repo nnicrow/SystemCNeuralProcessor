@@ -172,9 +172,6 @@
       <AdditionalOptions>/vmg </AdditionalOptions>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="systemc_example\systemc_example\src\cpu.cpp" />
-    <ClCompile Include="systemc_example\systemc_example\src\main.cpp" />
-    <ClCompile Include="systemc_example\systemc_example\src\mem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\dataset.txt" />
@@ -182,7 +179,6 @@
     <Content Include="data\square.txt" />
     <Content Include="data\triangle.txt" />
     <Content Include="data\weight.txt" />
-    <Content Include="systemc_example\systemc_example\Makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -191,8 +187,6 @@
     <ClInclude Include="modules\CD.h" />
     <ClInclude Include="modules\core.h" />
     <ClInclude Include="modules\memory.h" />
-    <ClInclude Include="systemc_example\systemc_example\src\cpu.h" />
-    <ClInclude Include="systemc_example\systemc_example\src\mem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
