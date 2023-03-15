@@ -1,4 +1,7 @@
 ﻿#include "../CD.h"
+
+/*
+
 #include <fstream>
 
 void CD::control_process()
@@ -99,3 +102,4 @@ void CD::memory_read_off()
 {
     rd_o_memory.write(false);
 }
+*/

@@ -1,6 +1,14 @@
 ﻿#include "../memory.h"
 
-void memory::mem_layer_read()
+void memory::read()
+{
+}
+
+void memory::write()
+{
+}
+
+/*void memory::mem_layer_read()
 {
 	int data_len = layers_data_[current_layer.read()].size();
 	int start_address = data_addr_s_o.read();
@@ -34,9 +42,11 @@ void memory::mem_weights_read()
 		buffer_memory[start_address + i] = weights_data_[current_layer.read()][i];
 	}
 	buffer_address_memory.write(start_address + data_len_o.read());
-}
+}*/
 
-void memory::mem_weights_write()
+
+
+/*void memory::mem_weights_write()
 {
 	int start_address = data_s_i.read();
 	int data_len = data_len_i.read();
@@ -71,4 +81,4 @@ void memory::process()
 			mem_weights_write();
 		wait();
 	}
-}
+}*/

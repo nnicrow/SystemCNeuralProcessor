@@ -7,3 +7,11 @@ void core::control_process()
         wait();
     }
 }
+
+void core::read()
+{
+}
+
+void core::write()
+{
+}

@@ -7,15 +7,33 @@
 
 int sc_main(int argc, char* argv[])
 {
-    bus bus("bus");
     CD CD("ControlDevice");
-    core core("core");
-    
     memory memory("memory");
-
+    sc_vector<core> cores("core", CORE_COUNT);
+    bus bus("bus");
+    
     // global parameters
     sc_clock clk("clk_i", sc_time(10, SC_NS));
-    sc_signal<int> layer_count;
+
+    // memory
+    memory.clk(clk);
+    
+    // bus
+    bus.clk(clk);
+    bus.slaves_inst(memory);
+
+    // CD
+    CD.clk(clk);
+    CD.bus_inst(bus);
+
+    for (int i = 0; i < CORE_COUNT; ++i)
+    {
+        cores[i].clk(clk);
+        cores[i].bus_inst(bus);
+        bus.slaves_inst(cores[i]);
+    }
+    
+    /*sc_signal<int> layer_count;
     sc_signal<int> current_layer;
     sc_signal<float> buffer_cd[BOFFER_SIZE];
     sc_signal<int> buffer_address_cd;
@@ -47,9 +65,7 @@ int sc_main(int argc, char* argv[])
     sc_signal<bool> is_last_layer_core;
     sc_signal<bool> is_busy_o_core;
 
-    // bus
-    bus.clk(clk);
-
+    
     // memory
     memory.clk(clk);
     memory.layer_count(layer_count);
@@ -113,7 +129,7 @@ int sc_main(int argc, char* argv[])
     CD.is_last_layer_core(is_last_layer_core);
     CD.is_busy_o_core(is_busy_o_core);
 
-    data_ready.write(true);
+    data_ready.write(true);*/
     sc_start(sc_time(4000, SC_NS));
     return 0;
 }

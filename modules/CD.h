@@ -1,13 +1,15 @@
 ﻿#pragma once
-#include <sysc/kernel/sc_module.h>
-
 #include "../config.h"
+#include "../interfaces/ISlave.h"
 
-SC_MODULE(CD)
+class CD : public sc_module
 {
+public:
     // global
     sc_in<bool> clk; // Тактовый сигнал
-    sc_out<int> layer_count; // колличество слоев
+    sc_port<ISlave> bus_inst;
+    
+    /*sc_out<int> layer_count; // колличество слоев
     sc_out<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
     sc_out<float> buffer_cd[BOFFER_SIZE]; //буфер для СД
     sc_in<float> buffer_memory[BOFFER_SIZE]; //буфер памяти
@@ -46,7 +48,7 @@ SC_MODULE(CD)
     sc_out<int> layer_number; // Номер текущего обрабатываемого слоя
     sc_in<bool> unload_data; // Сигнал выгрузки данных из общей памяти на вычислительное ядро
     bool is_busy = false; // Флаг занятости вычислительных ядер
-    */
+    #1#
 
     // Процессор, отвечающий за управление устройством
     void control_process();
@@ -61,15 +63,16 @@ SC_MODULE(CD)
     void memory_write_off();
     void memory_read_off();
     // чтение из памяти
-    void memory_read();
+    void memory_read();*/
 
+    
     // Конструктор модуля
     SC_CTOR(CD)
     {
-        SC_THREAD(control_process)
+        /*SC_THREAD(control_process)*/
         sensitive << clk.pos();
     }
 
-private:
-    bool is_init = false;
+/*private:
+    bool is_init = false;*/
 };

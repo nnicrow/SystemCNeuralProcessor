@@ -1,12 +1,18 @@
 ﻿#pragma once
 
 #include "../config.h"
+#include "../interfaces/ISlave.h"
 
-SC_MODULE(memory)
+class memory : public sc_module, public ISlave
 {
-    // входные сигналы
+public:
     sc_in<bool> clk;
-    sc_in<int> layer_count;
+
+    void read() override;
+
+    void write() override;
+
+    /*sc_in<int> layer_count;
     sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
     sc_in<float> buffer_cd[BOFFER_SIZE];
     sc_out<float> buffer_memory[BOFFER_SIZE];
@@ -35,14 +41,15 @@ SC_MODULE(memory)
     // запись весов в weights_data_ под индексом номера слоя + 1
     void mem_weights_write();
 
-    void process();
+
+    void process();*/
 
     // если current_layer = 0, то инициализация данных, загрузка
     // layer_count и mem_weights_write должны работать только в данном случае
 
     SC_CTOR(memory)
-    {        
-        SC_THREAD(process)
+    {
+        /*SC_THREAD(process)*/
         sensitive << clk.pos();
     }
 
