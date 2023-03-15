@@ -1,10 +1,10 @@
 ﻿#include "../memory.h"
 
-void memory::read(int start_addr, int len)
+void memory::read(int* data, int start_addr, int len)
 {
 }
 
-void memory::write()
+void memory::write(int* data, int start_addr, int len)
 {
 }
 

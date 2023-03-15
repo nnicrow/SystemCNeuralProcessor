@@ -9,8 +9,8 @@ public:
     sc_in<bool> clk;
     sc_port<ISlave, 0, SC_ZERO_OR_MORE_BOUND> slaves_inst;
     
-    void read(int start_addr, int len) override;
-    void write() override;
+    void read(int* data, int start_addr, int len) override;
+    void write(int* data, int start_addr, int len) override;
 
     SC_CTOR(bus)
     {

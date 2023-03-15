@@ -8,10 +8,10 @@ void core::control_process()
     }
 }
 
-void core::read(int start_addr, int len)
+void core::read(int* data, int start_addr, int len)
 {
 }
 
-void core::write()
+void core::write(int* data, int start_addr, int len)
 {
 }

@@ -8,47 +8,12 @@ class memory : public sc_module, public ISlave
 public:
     sc_in<bool> clk;
     
-    void read(int start_addr, int len) override;
+    void read(int* data, int start_addr, int len) override;
 
-    void write() override;
-
-    /*sc_in<int> layer_count;
-    sc_in<int> current_layer; // переменный параметр, указывает с каким слоем мы сейчас работаем
-    sc_in<float> buffer_cd[BOFFER_SIZE];
-    sc_out<float> buffer_memory[BOFFER_SIZE];
-    sc_in<int> buffer_address_cd;
-    sc_out<int> buffer_address_memory;
-    sc_out<bool> load_data;
-    
-    
-    sc_in<bool> w_or_l_i; // истина, если веса. ложь, если слои
-    sc_in<int> data_s_i; // началльный адрес данных слоя
-    sc_in<int> data_len_i; // ширина данных
-
-    // выходные сигналы
-    sc_out<int> data_addr_s_o; // началльный адрес данных слоя
-    sc_out<int> data_len_o; // длина
-
-    SC_HAS_PROCESS(memory);
-
-    // чтение данных из layers_data_ под индексом номера слоя
-    void mem_layer_read();
-    // запись данных в layers_data_ под индексом номера слоя
-    void mem_layer_write();
-    // чтение весов в weights_data_ под индексом номера слоя + 1
-    void mem_weights_read();
-    // запись весов в weights_data_ под индексом номера слоя + 1
-    void mem_weights_write();
-
-
-    void process();*/
-
-    // если current_layer = 0, то инициализация данных, загрузка
-    // layer_count и mem_weights_write должны работать только в данном случае
+    void write(int* data, int start_addr, int len) override;
 
     SC_CTOR(memory)
     {
-        /*SC_THREAD(process)*/
         sensitive << clk.pos();
     }
 

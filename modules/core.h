@@ -11,25 +11,13 @@ class core : public sc_module, public ISlave
 public:
     sc_in<bool> clk; // тактовый сигнал
     sc_port<ISlave> bus_inst;
-    
-    /*sc_buffer<float> buffer_cd[BOFFER_SIZE];
-
-    sc_in<int> data_s; // вход данных
-    sc_in<bool> w_or_l; // вход весов
-    sc_in<int> data_count; // размер данных
-    sc_in<int> res_s; // куда выгружать
-    sc_in<bool> is_work; // в данный момент в работе
-    sc_in<bool> is_last_layer; // флаг последнего слоя, true только у одного
-    sc_out<bool> is_busy_o; // занятость ядра
-
-    core_mode write_or_read;
 
     // функция которая будет получать данные весов и которая будет получать данные нейронов*/
     void control_process();
 
-    void read(int start_addr, int len) override;
+    void read(int* data, int start_addr, int len) override;
     
-    void write() override;;
+    void write(int* data, int start_addr, int len) override;;
 
     SC_CTOR(core)
     {
