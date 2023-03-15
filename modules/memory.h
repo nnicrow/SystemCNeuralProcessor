@@ -7,7 +7,7 @@ class memory : public sc_module, public ISlave
 {
 public:
     sc_in<bool> clk;
-
+    
     void read() override;
 
     void write() override;
@@ -20,8 +20,7 @@ public:
     sc_out<int> buffer_address_memory;
     sc_out<bool> load_data;
     
-    sc_in<bool> wr_i; // сигнал записи данных
-    sc_in<bool> rd_i; // сигнал чтения данных
+    
     sc_in<bool> w_or_l_i; // истина, если веса. ложь, если слои
     sc_in<int> data_s_i; // началльный адрес данных слоя
     sc_in<int> data_len_i; // ширина данных
