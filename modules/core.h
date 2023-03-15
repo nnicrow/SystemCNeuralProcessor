@@ -27,7 +27,7 @@ public:
     // функция которая будет получать данные весов и которая будет получать данные нейронов*/
     void control_process();
 
-    void read() override;;
+    void read(int start_addr, int len) override;
     
     void write() override;;
 

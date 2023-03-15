@@ -8,7 +8,7 @@ void core::control_process()
     }
 }
 
-void core::read()
+void core::read(int start_addr, int len)
 {
 }
 

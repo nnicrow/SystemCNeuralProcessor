@@ -1,6 +1,6 @@
 ﻿#include "../memory.h"
 
-void memory::read()
+void memory::read(int start_addr, int len)
 {
 }
 

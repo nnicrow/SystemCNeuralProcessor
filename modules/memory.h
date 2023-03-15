@@ -8,7 +8,7 @@ class memory : public sc_module, public ISlave
 public:
     sc_in<bool> clk;
     
-    void read() override;
+    void read(int start_addr, int len) override;
 
     void write() override;
 

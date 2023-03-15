@@ -9,7 +9,7 @@ public:
     sc_in<bool> clk;
     sc_port<ISlave, 0, SC_ZERO_OR_MORE_BOUND> slaves_inst;
     
-    void read() override;
+    void read(int start_addr, int len) override;
     void write() override;
 
     SC_CTOR(bus)
