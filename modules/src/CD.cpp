@@ -16,7 +16,8 @@ void CD::read_data()
             fin >> var;
             data[i] = var;
         }
-        address_[address_count_++] = bus_inst->write(data);
+        address_[address_count_++] = bus_inst->write(data, last_address_);
+        last_address_ += LAYER_FIRST;
         wait();
         
         data.resize(LAYER_TWO);
@@ -25,7 +26,8 @@ void CD::read_data()
             fin >> var;
             data[i] = var;
         }
-        address_[address_count_++] = bus_inst->write(data);
+        address_[address_count_++] = bus_inst->write(data, last_address_);
+        last_address_ += LAYER_TWO;
         wait();
     }
 }

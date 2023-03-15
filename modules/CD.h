@@ -16,10 +16,12 @@ public:
     {
         /*SC_THREAD(control_process)*/
         address_count_ = 0;
-        address_.resize(MEM_SIZE / 16);
+        address_.resize(ADDRESS_SIZE);
         sensitive << clk.pos();
     }
 private:
     std::vector<int> address_;
     int address_count_;
+    int last_address_;
+    const int layer_count_ = LAYER_COUNT;
 };

@@ -10,7 +10,7 @@ public:
     sc_port<ISlave, 0, SC_ZERO_OR_MORE_BOUND> slaves_inst;
     
     void read(int* data, int start_addr, int len) override;
-    int write(std::vector<float> &data) override;
+    int write(std::vector<float> &data, int len) override;
 
     SC_CTOR(bus)
     {
