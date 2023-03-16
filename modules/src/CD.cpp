@@ -29,7 +29,7 @@ void CD::proccess()
     }
 
     // read and push neurons to memory
-    ifstream fin2("data/square.txt");
+    ifstream fin2("data/triangle.txt");
     while (!fin2.eof())
     {
         std::vector<float> data;
@@ -55,6 +55,13 @@ void CD::proccess()
         // запрос данных слоев
         std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
         wait();
+
+        for (int i = 0; i < neurons.size(); ++i)
+        {
+            if (i % 7 == 0)
+                cout << endl;
+            cout << neurons[i] << " ";
+        }
 
         // запрос данных весов
         std::vector<float> weight = bus_memory_inst->read(address_[layer_num],
@@ -120,6 +127,16 @@ void CD::proccess()
             }
             last_memory_busy_address_ += tasks[i];
         }
+        wait();
+        wait();
+        for (int i = 0; i < CORE_COUNT; ++i)
+        {
+            while (bus_cores_inst->is_busy(i))
+            {
+                wait();
+            }
+        }
+       
     }
     // расчёт закончен. Осталось применить функцию soft_max
     while (bus_memory_inst->mem_is_busy())
@@ -138,9 +155,9 @@ void CD::proccess()
         wait();
     }
     last_memory_busy_address_ += layers_[layer_count_ - 1];
+    wait();
     std::vector<float> result = bus_memory_inst->read(address_[layer_count_ + layer_count_], layers_[layer_count_ - 1]);
-    
-    
+    out_result(result);
 }
 
 void CD::write_to_memory(std::vector<float>& data, int len)
@@ -150,17 +167,31 @@ void CD::write_to_memory(std::vector<float>& data, int len)
     last_memory_busy_address_ += len;
 }
 
-RESULT_ENUM
+enum result_enum { circle, square, triangle };
+
+inline const char* ToString(result_enum e)
+{
+    switch (e)
+    {
+    case circle: return "Circle";
+    case square: return "Square";
+    case triangle: return "Triangle";
+    }
+}
 
 void CD::out_result(std::vector<float>& data)
 {
     int max_index = 0;
 
-    for (int i = 1; i < data.size(); ++i) {
-        if (data[i] > data[max_index]) {
+    for (int i = 1; i < data.size(); ++i)
+    {
+        if (data[i] > data[max_index])
+        {
             max_index = i;
         }
     }
     result_enum e = static_cast<result_enum>(max_index);
-    cout << "Result is" << e << endl;
+
+    cout << endl;
+    cout << "Result is " << ToString(e) << endl;
 }

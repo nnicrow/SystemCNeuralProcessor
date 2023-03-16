@@ -8,4 +8,4 @@
 #define ADDRESS_SIZE (2048 / 64)
 #define CORE_COUNT 3
 #define QUEUE_SIZE (CORE_COUNT + 1)
-#define RESULT_ENUM enum result_enum { circle, square, triangle};
+#define fileName 

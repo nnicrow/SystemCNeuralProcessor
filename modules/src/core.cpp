@@ -2,34 +2,37 @@
 
 void core::control_process()
 {
-    while (!is_busy_flag_)
+    while (true)
     {
-        wait();
-        continue;
-    }
-    cout << "core " << core_num_ << " start count" << endl;
+        while (!is_busy_flag_)
+        {
+            wait();
+        }
+        cout << "core " << core_num_ << " start count" << endl;
 
-    if (is_last_flag_)
-    {
-        result_ = softmax(neurons_data_);
+        if (is_last_flag_)
+        {
+            result_ = softmax(neurons_data_);
+            bus_inst->write(result_, start_address_);
+            is_busy_flag_ = false;
+            return;
+        }
+    
+        // цикл по задачам
+        for (int task_num = 0; task_num < weight_data_.size(); ++task_num)
+        {
+            float res = 0;
+            for (int neuron = 0; neuron < weight_data_[task_num].size(); ++neuron)
+            {
+                res += weight_data_[task_num][neuron] * neurons_data_[task_num];
+            }
+            result_[task_num] = activ_f(res);
+        }
+
         bus_inst->write(result_, start_address_);
         is_busy_flag_ = false;
-        return;
+        wait();
     }
-    
-    // цикл по задачам
-    for (int task_num = 0; task_num < weight_data_.size(); ++task_num)
-    {
-        float res = 0;
-        for (int neuron = 0; neuron < weight_data_[task_num].size(); ++neuron)
-        {
-            res += weight_data_[task_num][neuron] * neurons_data_[task_num];
-        }
-        result_[task_num] = activ_f(res);
-    }
-
-    bus_inst->write(result_, start_address_);
-    is_busy_flag_ = false;
 }
 
 bool core::is_busy(int core_num)
