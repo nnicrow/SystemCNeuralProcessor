@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "../interfaces/ISlave.h"
+#include "../interfaces/IMemory.h"
+#include "../interfaces/ICore.h"
 #include "../config.h"
 
 class queue
@@ -15,14 +16,17 @@ public:
 };
 
 
-class bus : public sc_module, public ISlave
+class bus : public sc_module, public IMemory, public ICore 
 {
 public:
     sc_in<bool> clk;
-    sc_port<ISlave, 0, SC_ZERO_OR_MORE_BOUND> slaves_inst;
+    sc_port<IMemory> memory_inst;
+    sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
 
     std::vector<float>& read(int start_addr, int len) override;
-    void write(std::vector<float>& data, int start_address, target current_target, int core_num = 0) override;
+    void write(std::vector<float>& data, int start_address) override;
+    bool is_busy(int core_num) override;
+    void core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address) override;;
 
     void bus_write_process();
 

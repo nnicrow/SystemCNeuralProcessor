@@ -1,16 +1,16 @@
 ﻿#pragma once
 
 #include "../config.h"
-#include "../interfaces/ISlave.h"
+#include "../interfaces/IMemory.h"
 
-class memory : public sc_module, public ISlave
+class memory : public sc_module, public IMemory
 {
 public:
     sc_in<bool> clk;
     
     std::vector<float>& read(int start_addr, int len) override;
 
-    void write(std::vector<float> &data, int start_address, target target, int core_num = 0) override;
+    void write(std::vector<float> &data, int start_address) override;
 
     SC_CTOR(memory)
     {

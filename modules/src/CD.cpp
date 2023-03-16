@@ -3,8 +3,9 @@
 #include <fstream>
 #include "../../config.h"
 
-void CD::read_data()
+void CD::proccess()
 {
+    // read data from file
     cout << "Start read data" << endl;
     ifstream fin("data/weight.txt");
     float var;
@@ -18,7 +19,7 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_, target_memory);
+        bus_memory_inst->write(data, last_memory_busy_address_);
         last_memory_busy_address_ += LAYER_FIRST;
         wait();
         
@@ -29,7 +30,7 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_, target_memory);
+        bus_memory_inst->write(data, last_memory_busy_address_);
         last_memory_busy_address_ += LAYER_TWO;
         wait();
         break;
@@ -45,10 +46,11 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_, target_memory);
+        bus_memory_inst->write(data, last_memory_busy_address_);
         last_memory_busy_address_ += LAYER_FIRST;
         wait();
         break;
     }
     cout << "End read data" << endl;
+    data_read_end_ = true;
 }

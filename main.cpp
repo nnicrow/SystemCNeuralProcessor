@@ -22,17 +22,18 @@ int sc_main(int argc, char* argv[])
     
     // bus
     bus.clk(clk);
-    bus.slaves_inst(memory);
+    bus.memory_inst(memory);
 
     // CD
     CD.clk(clk);
-    CD.bus_inst(bus);
-
+    CD.bus_memory_inst(bus);
+    CD.bus_cores_inst(bus);
+    
     for (int i = 0; i < CORE_COUNT; ++i)
     {
         cores[i].clk(clk);
         cores[i].bus_inst(bus);
-        bus.slaves_inst(cores[i]);
+        bus.core_inst(cores[i]);
     }
     
     sc_start(sc_time(4000, SC_NS));

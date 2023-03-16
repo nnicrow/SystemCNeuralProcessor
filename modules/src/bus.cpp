@@ -17,17 +17,21 @@ std::vector<float>& bus::read(int start_addr, int len)
     return data;
 }
 
-void bus::write(std::vector<float>& data, int start_address, target current_target, int core_num)
+void bus::write(std::vector<float>& data, int start_address)
 {
-    if (current_target == target_memory)
-    {
-        queue q{data, start_address};
-        write_queue_.emplace_back(q);    
-    }
-    else
-    {
-        
-    }
+    queue q{data, start_address};
+    write_queue_.emplace_back(q);
+}
+
+bool bus::is_busy(int core_num)
+{
+    cout << "is_busy" << endl;
+    return false;
+}
+
+void bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
+{
+    
 }
 
 void bus::bus_write_process()
@@ -42,7 +46,7 @@ void bus::bus_write_process()
 
         queue q = write_queue_.back();
         write_queue_.pop_back();
-        slaves_inst->write(q.data_, q.start_address_, target_memory);
+        memory_inst->write(q.data_, q.start_address_);
         wait();
     }
 }

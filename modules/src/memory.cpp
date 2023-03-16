@@ -10,7 +10,7 @@ std::vector<float>& memory::read(int start_addr, int len)
 	return return_data_;
 }
 
-void memory::write(std::vector<float> &data, int start_address, target current_target, int core_num)
+void memory::write(std::vector<float> &data, int start_address)
 {
 	cout << "Memory write data at " << start_address << endl;
 	for (int i = 0; i < data.size(); ++i)
