@@ -35,8 +35,7 @@ void core::write(std::vector<float> &data, int start_address)
 
 bool core::is_busy(int core_num)
 {
-    
-    return false;
+    return is_busy_flag;
 }
 
 void core::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)

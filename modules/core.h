@@ -26,4 +26,6 @@ public:
         SC_THREAD(control_process)
         sensitive << clk.pos();
     }
+private:
+    bool is_busy_flag;
 };

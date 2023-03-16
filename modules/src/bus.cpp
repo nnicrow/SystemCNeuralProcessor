@@ -25,13 +25,12 @@ void bus::write(std::vector<float>& data, int start_address)
 
 bool bus::is_busy(int core_num)
 {
-    cout << "is_busy" << endl;
-    return false;
+    return core_inst[core_num]->is_busy(core_num);
 }
 
 void bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
 {
-    
+    // TODO: проверка на занятость ядра, если оно занято, то ожидаем, пока не освободится
 }
 
 void bus::bus_write_process()
