@@ -66,12 +66,12 @@ void CD::proccess()
         for (int i = 0; i < layers_[layer_num]; ++i)
         {
             weight_data[i].resize(layers_[layer_num + 1]);
-            for (int j = 0; j < layers_[layer_num]; ++j)
+            for (int j = 0; j < layers_[layer_num + 1]; ++j)
             {
                 weight_data[i][j] = weight[weight_counter++];
             }
         }
-        
+
         // объявляем параметры
         std::vector<int> tasks;
         tasks.resize(CORE_COUNT);
@@ -91,17 +91,22 @@ void CD::proccess()
         }
 
         // считаем вектор задачи
-        // TODO: переделать
-        /*int total_neurons = 0;
+        int total_neurons = 0;
         for (int i = 0; i < CORE_COUNT; ++i)
         {
             weight_tasks[i].resize(tasks[i]);
+
             for (int j = 0; j < tasks[i]; ++j)
             {
-                weight_tasks[i][j] = neurons[total_neurons + j];
+                weight_tasks[i][j].resize(layers_[layer_num + 1]);
+                for (int k = 0; k < layers_[layer_num + 1]; ++k)
+                {
+                    weight_tasks[i][j][k] = weight_data[j][k];
+                }
             }
+
             total_neurons += tasks[i];
-        }*/
+        }
 
         // распределяем задачи
         for (int i = 0; i < CORE_COUNT; ++i)
