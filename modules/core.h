@@ -27,8 +27,11 @@ private:
     int core_num_;
     std::vector<float> neurons_data_;
     std::vector<std::vector<float>> weight_data_;
+    int start_address_;
     bool is_busy_flag_;
-    std::vector<float> buffer_;
+    bool is_last_flag_;
+    std::vector<float> result_;
 
     float activ_f(float data);
+    std::vector<float> softmax(std::vector<float> t);
 };

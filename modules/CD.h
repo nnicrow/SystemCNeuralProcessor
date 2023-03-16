@@ -30,4 +30,5 @@ private:
     const std::vector<int> layers_ = LAYER_S;
     
     void write_to_memory(std::vector<float>& data, int len);
+    void out_result(std::vector<float>& data);
 };

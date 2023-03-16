@@ -114,20 +114,33 @@ void CD::proccess()
             while (true)
             {
                 // елси ложь, то ядро не может принять задачу.
-                if (bus_cores_inst->core_task(i, neurons, weight_tasks[i], tasks[i] + last_memory_busy_address_))
+                if (bus_cores_inst->core_task(i, neurons, weight_tasks[i], last_memory_busy_address_))
                     break;
                 wait();
             }
+            last_memory_busy_address_ += tasks[i];
         }
-        last_memory_busy_address_ += layers_[layer_num + 1];
     }
     // расчёт закончен. Осталось применить функцию soft_max
     while (bus_memory_inst->mem_is_busy())
     {
         wait();
     }
-    // TODO result
-    // std::vector<float> result = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_count_ - 1]);
+    std::vector<float> neurons = bus_memory_inst->read(address_[layer_count_ + layer_count_ - 1],
+                                                       layers_[layer_count_ - 1]);
+    wait();
+    std::vector<std::vector<float>> weight_task;
+    while (true)
+    {
+        // елси ложь, то ядро не может принять задачу.
+        if (bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_, true))
+            break;
+        wait();
+    }
+    last_memory_busy_address_ += layers_[layer_count_ - 1];
+    std::vector<float> result = bus_memory_inst->read(address_[layer_count_ + layer_count_], layers_[layer_count_ - 1]);
+    
+    
 }
 
 void CD::write_to_memory(std::vector<float>& data, int len)
@@ -135,4 +148,19 @@ void CD::write_to_memory(std::vector<float>& data, int len)
     address_[address_count_++] = last_memory_busy_address_;
     bus_memory_inst->write(data, last_memory_busy_address_);
     last_memory_busy_address_ += len;
+}
+
+RESULT_ENUM
+
+void CD::out_result(std::vector<float>& data)
+{
+    int max_index = 0;
+
+    for (int i = 1; i < data.size(); ++i) {
+        if (data[i] > data[max_index]) {
+            max_index = i;
+        }
+    }
+    result_enum e = static_cast<result_enum>(max_index);
+    cout << "Result is" << e << endl;
 }

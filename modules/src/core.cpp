@@ -9,79 +9,67 @@ void core::control_process()
     }
     cout << "core " << core_num_ << " start count" << endl;
 
-    // массив выходов с предыдущего слоя
-    std::vector<float> data_in = neurons_data_;
-
-    // цикл (пока не закончатся пары числе)
-    for (int i = 0; i < weight_data_[0].size(); i += 8)
+    if (is_last_flag_)
     {
-        std::vector<float> result(8);
-
-        // берём 8 пар (x, w)
-        for (int j = 0; j < 8; ++j)
+        result_ = softmax(neurons_data_);
+        bus_inst->write(result_, start_address_);
+        is_busy_flag_ = false;
+        return;
+    }
+    
+    // цикл по задачам
+    for (int task_num = 0; task_num < weight_data_.size(); ++task_num)
+    {
+        float res = 0;
+        for (int neuron = 0; neuron < weight_data_[task_num].size(); ++neuron)
         {
-            float x = data_in[j];
-            float w = weight_data_[j][i + j];
-
-            // умножаем
-            result[j] = x * w;
+            res += weight_data_[task_num][neuron] * neurons_data_[task_num];
         }
-
-        // записываем в буфер
-        buffer_.push_back(result);
-
-        // Этап конвеера - умножение на веса и применение функции активации
-        for (int j = 0; j < 8; ++j)
-        {
-            float sum = 0.0;
-            for (int k = 0; k < 8; ++k)
-            {
-                sum += buffer_.back()[k] * weight_data_[j][i + k];
-            }
-            neurons_data_[j] = activ_f(sum);
-        }
+        result_[task_num] = activ_f(res);
     }
 
-    // обработка последнего слоя
-    if (is_last)
-    {
-        std::vector<float> result(8);
-        for (int j = 0; j < 8; ++j)
-        {
-            float sum = 0.0;
-            for (int k = 0; k < weight_data_[0].size(); ++k)
-            {
-                sum += neurons_data_[k] * weight_data_[j][k];
-            }
-            result[j] = activ_f(sum);
-        }
-        buffer_.push_back(result);
-    }
-
-    // сброс флага занятости
+    bus_inst->write(result_, start_address_);
     is_busy_flag_ = false;
 }
-
 
 bool core::is_busy(int core_num)
 {
     return is_busy_flag_;
 }
 
-bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last)
+bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
+                     int start_address, bool is_last)
 {
     if (is_busy(core_num))
     {
         return false;
     }
+    is_busy_flag_ = true;
+    
     neurons_data_ = neurons;
     weight_data_ = weight;
-    is_busy_flag_ = true;
+    start_address_ = start_address;
+    is_last_flag_ = is_last;
     core_num_ = core_num;
+    result_.resize(weight_data_.size());
     return true;
 }
 
 float core::activ_f(float data)
 {
     return 1 / (1 + exp(-data));
+}
+
+std::vector<float> core::softmax(std::vector<float> t)
+{
+    std::vector<float> out(t.size());
+    double sum = 0;
+    for (int i = 0; i < t.size(); i++) {
+        out[i] = std::exp(t[i]);
+        sum += out[i];
+    }
+    for (int i = 0; i < t.size(); i++) {
+        out[i] /= sum;
+    }
+    return out;
 }
