@@ -29,7 +29,8 @@ void CD::proccess()
     }
 
     // read and push neurons to memory
-    ifstream fin2("data/triangle.txt");
+    std::string filename = FILE_NAME;
+    ifstream fin2(filename);
     while (!fin2.eof())
     {
         std::vector<float> data;
@@ -56,13 +57,6 @@ void CD::proccess()
         std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
         wait();
 
-        for (int i = 0; i < neurons.size(); ++i)
-        {
-            if (i % 7 == 0)
-                cout << endl;
-            cout << neurons[i] << " ";
-        }
-
         // запрос данных весов
         std::vector<float> weight = bus_memory_inst->read(address_[layer_num],
                                                           layers_[layer_num] * layers_[layer_num + 1]);
@@ -86,7 +80,7 @@ void CD::proccess()
         weight_tasks.resize(CORE_COUNT);
 
         // считаем вектор размера задачи 
-        int size_of_task = layers_[layer_num + 1] / 3;
+        int size_of_task = layers_[layer_num + 1] / CORE_COUNT;
         for (int i = 0; i < CORE_COUNT; ++i)
         {
             tasks[i] = size_of_task;
@@ -98,6 +92,7 @@ void CD::proccess()
         }
 
         // считаем вектор задачи
+        // TODO: хуяня
         int total_neurons = 0;
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -126,25 +121,26 @@ void CD::proccess()
                 wait();
             }
             last_memory_busy_address_ += tasks[i];
+            address_[address_count_++] = last_memory_busy_address_;
         }
-        wait();
-        wait();
         for (int i = 0; i < CORE_COUNT; ++i)
         {
             while (bus_cores_inst->is_busy(i))
             {
-                wait();
+                wait(CORE_COUNT + 1);
             }
         }
-       
     }
     // расчёт закончен. Осталось применить функцию soft_max
     while (bus_memory_inst->mem_is_busy())
     {
         wait();
     }
+
     std::vector<float> neurons = bus_memory_inst->read(address_[layer_count_ + layer_count_ - 1],
                                                        layers_[layer_count_ - 1]);
+    last_memory_busy_address_ += layers_[layer_count_ - 1];
+    address_[address_count_++] = last_memory_busy_address_;
     wait();
     std::vector<std::vector<float>> weight_task;
     while (true)
@@ -155,8 +151,9 @@ void CD::proccess()
         wait();
     }
     last_memory_busy_address_ += layers_[layer_count_ - 1];
+    address_[address_count_] = last_memory_busy_address_;
     wait();
-    std::vector<float> result = bus_memory_inst->read(address_[layer_count_ + layer_count_], layers_[layer_count_ - 1]);
+    std::vector<float> result = bus_memory_inst->read(address_[address_count_ - 1], layers_[layer_count_ - 1]);
     out_result(result);
 }
 
@@ -178,7 +175,6 @@ inline const char* ToString(result_enum e)
     case triangle: return "Triangle";
     }
 }
-
 void CD::out_result(std::vector<float>& data)
 {
     int max_index = 0;

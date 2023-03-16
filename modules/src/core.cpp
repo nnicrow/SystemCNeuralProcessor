@@ -74,5 +74,5 @@ std::vector<float> core::softmax(std::vector<float> t)
     for (int i = 0; i < t.size(); i++) {
         out[i] /= sum;
     }
-    return out;
+    return t;
 }
