@@ -1,25 +1,67 @@
 ﻿#include "../memory.h"
 
-std::vector<float>& memory::read(int start_addr, int len)
+void memory::mem_layer_read()
 {
-	return_data_.resize(len);
-	for (int i = 0; i < len; ++i)
-	{
-		return_data_[i] = memory_data_[start_addr + i];
-	}
-	return return_data_;
+	
 }
 
-void memory::write(std::vector<float> &data, int start_address)
+void memory::mem_layer_write()
 {
-	cout << "Memory write data at " << start_address << endl;
-	for (int i = 0; i < data.size(); ++i)
-	{
-		memory_data_[start_address + i] = data[i];
+	int start_address = data_s_i.read();
+	int data_len = data_len_i.read();
+	
+	layers_data_[current_layer.read()].resize(data_len);
+	
+	// Записываем данные из буфера CD в вектор весов
+	
+	for (int i = 0; i < data_len; ++i) {
+		layers_data_[current_layer.read()][i] = buffer_cd[start_address + i].read();
+		cout << layers_data_[current_layer.read()][i] << endl;
 	}
 }
 
-bool memory::mem_is_busy()
+void memory::mem_weights_read()
 {
-	return false;
+	int data_len = weights_data_[current_layer.read()].size();
+	
+	for (int i = 0; i < data_len; ++i) {
+		buffer_memory[i] = weights_data_[current_layer.read()][i];
+	}
+}
+
+void memory::mem_weights_write()
+{
+	int start_address = data_s_i.read();
+	int data_len = data_len_i.read();
+	
+	weights_data_[current_layer.read()].resize(data_len);
+	
+	// Записываем данные из буфера CD в вектор весов
+	
+	for (int i = 0; i < data_len; ++i) {
+		weights_data_[current_layer.read()][i] = buffer_cd[start_address + i].read();
+	}
+}
+
+void memory::process()
+{
+	wait();
+	weights_data_.resize(layer_count.read());
+	layers_data_.resize(layer_count.read());
+	
+	while (true)
+	{
+		if (rd_i.read() && !w_or_l_i.read())
+			mem_layer_read();
+
+		if (wr_i.read() && !w_or_l_i.read())
+			mem_layer_write();
+
+		if (rd_i.read() && w_or_l_i.read())
+			mem_weights_read();
+
+		if (wr_i.read() && w_or_l_i.read())
+			mem_weights_write();
+		wait();
+	}
 }

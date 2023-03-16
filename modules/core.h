@@ -1,37 +1,24 @@
 ﻿#pragma once
 #include <sysc/kernel/sc_module.h>
 
-#include "../interfaces/IMemory.h"
-#include "../interfaces/ICore.h"
+#include "systemc.h"
 
-class core : public sc_module, public ICore
+enum class core_mode { read, write, count, await };
+
+SC_MODULE(core)
 {
-public:
-    sc_in<bool> clk; // тактовый сигнал
-    sc_port<IMemory> bus_inst;
+    sc_in<bool> clk;
+    sc_in<int> data_s;
+    sc_in<int> weight_s;
+    sc_in<int> data_count;
+    sc_in<int> res_s;
+    sc_in<bool> is_work;
+    sc_in<bool> is_last_layer;
+    sc_out<bool> is_busy_o;
 
-    // функция которая будет получать данные весов и которая будет получать данные нейронов
-    void control_process();
-
-    bool is_busy(int core_num) override;
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
-                   int start_address, bool is_last = false) override;
+    core_mode write_or_read;
 
     SC_CTOR(core)
     {
-        SC_THREAD(control_process)
-        sensitive << clk.pos();
     }
-
-private:
-    int core_num_;
-    std::vector<float> neurons_data_;
-    std::vector<std::vector<float>> weight_data_;
-    int start_address_;
-    bool is_busy_flag_;
-    bool is_last_flag_;
-    std::vector<float> result_;
-
-    float activ_f(float data);
-    std::vector<float> softmax(std::vector<float> t);
 };
