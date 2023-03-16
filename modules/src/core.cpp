@@ -9,20 +9,59 @@ void core::control_process()
     }
     cout << "core " << core_num_ << " start count" << endl;
 
-    for (int task_num = 0; task_num < weight_data_.size() - 1; ++task_num)
+    // массив выходов с предыдущего слоя
+    std::vector<float> data_in = neurons_data_;
+
+    // цикл (пока не закончатся пары числе)
+    for (int i = 0; i < weight_data_[0].size(); i += 8)
     {
-        int var;
+        std::vector<float> result(8);
+
+        // берём 8 пар (x, w)
+        for (int j = 0; j < 8; ++j)
+        {
+            float x = data_in[j];
+            float w = weight_data_[j][i + j];
+
+            // умножаем
+            result[j] = x * w;
+        }
+
+        // записываем в буфер
+        buffer_.push_back(result);
+
+        // Этап конвеера - умножение на веса и применение функции активации
+        for (int j = 0; j < 8; ++j)
+        {
+            float sum = 0.0;
+            for (int k = 0; k < 8; ++k)
+            {
+                sum += buffer_.back()[k] * weight_data_[j][i + k];
+            }
+            neurons_data_[j] = activ_f(sum);
+        }
     }
-    
-    /*
-    data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
-    цикл (пока не закончатся пары числе)    
-        берём 8 пар (x, w)
-        умножаем
-        записываем друг 
-        записываем в буфер //-- Этап конвеера
-    */
+
+    // обработка последнего слоя
+    if (is_last)
+    {
+        std::vector<float> result(8);
+        for (int j = 0; j < 8; ++j)
+        {
+            float sum = 0.0;
+            for (int k = 0; k < weight_data_[0].size(); ++k)
+            {
+                sum += neurons_data_[k] * weight_data_[j][k];
+            }
+            result[j] = activ_f(sum);
+        }
+        buffer_.push_back(result);
+    }
+
+    // сброс флага занятости
+    is_busy_flag_ = false;
 }
+
 
 bool core::is_busy(int core_num)
 {
