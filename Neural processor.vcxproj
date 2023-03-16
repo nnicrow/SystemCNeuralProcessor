@@ -19,8 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="modules\src\bus.cpp" />
+    <ClCompile Include="bus.cpp" />
     <ClCompile Include="modules\src\CD.cpp" />
     <ClCompile Include="modules\src\core.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
@@ -181,10 +180,6 @@
     <Content Include="data\weight.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config.h" />
-    <ClInclude Include="interfaces\ICore.h" />
-    <ClInclude Include="interfaces\IMemory.h" />
-    <ClInclude Include="modules\bus.h" />
     <ClInclude Include="modules\CD.h" />
     <ClInclude Include="modules\core.h" />
     <ClInclude Include="modules\memory.h" />

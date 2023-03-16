@@ -1,193 +1,93 @@
 ﻿#include "../CD.h"
-
 #include <fstream>
-#include "../../config.h"
 
-void CD::proccess()
+void CD::control_process()
 {
-    // read data from file
-    cout << "Start read data" << endl;
-
-    // read and push weight to memory
-    ifstream fin("data/weight.txt");
-
-    while (!fin.eof())
-    {
-        for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
-        {
-            std::vector<float> data;
-            int len = layers_[layer_num] * layers_[layer_num + 1];
-            data.resize(len);
-            for (int i = 0; i < len; ++i)
-            {
-                fin >> data[i];
-            }
-            write_to_memory(data, len);
-            wait();
-        }
-        break;
-    }
-
-    // read and push neurons to memory
-    std::string filename = FILE_NAME;
-    ifstream fin2(filename);
-    while (!fin2.eof())
-    {
-        std::vector<float> data;
-        int len = layers_[0];
-        data.resize(len);
-        for (int i = 0; i < len; ++i)
-        {
-            fin2 >> data[i];
-        }
-        write_to_memory(data, len);
-        wait();
-        break;
-    }
-    cout << "End read data" << endl;
-
-    for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
-    {
-        while (bus_memory_inst->mem_is_busy())
-        {
-            wait();
-        }
-
-        // запрос данных слоев
-        std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
-        wait();
-
-        // запрос данных весов
-        std::vector<float> weight = bus_memory_inst->read(address_[layer_num],
-                                                          layers_[layer_num] * layers_[layer_num + 1]);
-
-        std::vector<std::vector<float>> weight_data;
-        weight_data.resize(layers_[layer_num + 1]);
-        int weight_counter = 0;
-        for (int i = 0; i < layers_[layer_num + 1]; ++i)
-        {
-            weight_data[i].resize(layers_[layer_num]);
-            for (int j = 0; j < layers_[layer_num]; ++j)
-            {
-                weight_data[i][j] = weight[weight_counter++];
-            }
-        }
-
-        // объявляем параметры
-        std::vector<int> tasks;
-        tasks.resize(CORE_COUNT);
-        std::vector<std::vector<std::vector<float>>> weight_tasks;
-        weight_tasks.resize(CORE_COUNT);
-
-        // считаем вектор размера задачи 
-        int size_of_task = layers_[layer_num + 1] / CORE_COUNT;
-        for (int i = 0; i < CORE_COUNT; ++i)
-        {
-            tasks[i] = size_of_task;
-        }
-        int remainder = layers_[layer_num + 1] % CORE_COUNT;
-        for (int i = 0; i < remainder; ++i)
-        {
-            tasks[i] += 1;
-        }
-
-        // считаем вектор задачи
-        // TODO: хуяня
-        int total_neurons = 0;
-        for (int i = 0; i < CORE_COUNT; ++i)
-        {
-            weight_tasks[i].resize(tasks[i]);
-
-            for (int j = 0; j < tasks[i]; ++j)
-            {
-                weight_tasks[i][j].resize(layers_[layer_num]);
-                for (int k = 0; k < layers_[layer_num]; ++k)
-                {
-                    weight_tasks[i][j][k] = weight_data[j][k];
-                }
-            }
-
-            total_neurons += tasks[i];
-        }
-
-        // распределяем задачи
-        for (int i = 0; i < CORE_COUNT; ++i)
-        {
-            while (true)
-            {
-                // елси ложь, то ядро не может принять задачу.
-                if (bus_cores_inst->core_task(i, neurons, weight_tasks[i], last_memory_busy_address_))
-                    break;
-                wait();
-            }
-            last_memory_busy_address_ += tasks[i];
-            address_[address_count_++] = last_memory_busy_address_;
-        }
-        for (int i = 0; i < CORE_COUNT; ++i)
-        {
-            while (bus_cores_inst->is_busy(i))
-            {
-                wait(CORE_COUNT + 1);
-            }
-        }
-    }
-    // расчёт закончен. Осталось применить функцию soft_max
-    while (bus_memory_inst->mem_is_busy())
-    {
-        wait();
-    }
-
-    std::vector<float> neurons = bus_memory_inst->read(address_[layer_count_ + layer_count_ - 1],
-                                                       layers_[layer_count_ - 1]);
-    last_memory_busy_address_ += layers_[layer_count_ - 1];
-    address_[address_count_++] = last_memory_busy_address_;
-    wait();
-    std::vector<std::vector<float>> weight_task;
+    layer_count.initialize(LAYER_COUNT);
+    current_layer.initialize(0);
+    // инициализация, достает данные из файла и отправляет их в память, запускается когда data_ready
     while (true)
     {
-        // елси ложь, то ядро не может принять задачу.
-        if (bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_, true))
-            break;
-        wait();
+        if (!data_ready) wait();
+        else break;
     }
-    last_memory_busy_address_ += layers_[layer_count_ - 1];
-    address_[address_count_] = last_memory_busy_address_;
-    wait();
-    std::vector<float> result = bus_memory_inst->read(address_[address_count_ - 1], layers_[layer_count_ - 1]);
-    out_result(result);
-}
+    cout << "Initialized start" << endl;
+    buffer_address_cd.write(0);
+    w_or_l_memory.initialize(true);
 
-void CD::write_to_memory(std::vector<float>& data, int len)
-{
-    address_[address_count_++] = last_memory_busy_address_;
-    bus_memory_inst->write(data, last_memory_busy_address_);
-    last_memory_busy_address_ += len;
-}
-
-enum result_enum { circle, square, triangle };
-
-inline const char* ToString(result_enum e)
-{
-    switch (e)
+    // старт чтения весов
+    int start_address = buffer_address_cd.read();
+    buffer_address_cd.write(start_address + LAYER_FIRST);
+    ifstream fin("data/weight.txt");
+    float var;
+    while (!fin.eof())
     {
-    case circle: return "Circle";
-    case square: return "Square";
-    case triangle: return "Triangle";
-    }
-}
-void CD::out_result(std::vector<float>& data)
-{
-    int max_index = 0;
-
-    for (int i = 1; i < data.size(); ++i)
-    {
-        if (data[i] > data[max_index])
+        for (int i = 0; i < LAYER_FIRST; ++i)
         {
-            max_index = i;
+            fin >> var;
+            buffer_cd[i].write(var);
         }
-    }
-    result_enum e = static_cast<result_enum>(max_index);
+        memory_write(start_address, LAYER_FIRST);
+        wait();
+        start_address = buffer_address_cd.read();
+        buffer_address_cd.write(start_address + LAYER_TWO);
 
-    cout << endl;
-    cout << "Result is " << ToString(e) << endl;
+        memory_write_off();
+        wait();
+        
+        for (int i = 0; i < LAYER_TWO; ++i)
+        {
+            fin >> var;
+            buffer_cd[start_address + i].write(var);
+        }
+        memory_write(start_address, LAYER_TWO);
+        wait();
+        break;
+    }
+    memory_write_off();
+    wait();
+    w_or_l_memory.write(false);
+    start_address = buffer_address_cd.read();
+    buffer_address_cd.write(start_address + LAYER_FIRST);
+    ifstream fin2("data/circle.txt");
+    while (!fin2.eof())
+    {
+        for (int i = 0; i < LAYER_FIRST; ++i)
+        {
+            fin2 >> var;
+            buffer_cd[start_address + i].write(var);
+        }
+        memory_write(start_address, LAYER_FIRST);
+        wait();
+        break;
+    }
+    
+    memory_write_off();
+    wait();
+}
+
+void CD::out()
+{
+    // TODO: write data to output stream
+    // вы помещаем в data_s_o_memory начальный адрес нашей *****
+    // а в data_len_o_memory длину *****
+}
+
+void CD::memory_write(int data_s, int data_len)
+{
+    rd_o_memory.write(false);
+    data_s_o_memory.write(data_s);
+    data_len_o_memory.write(data_len);
+    wr_o_memory.write(true);
+}
+
+void CD::memory_write_off()
+{
+    wr_o_memory.write(false);
+}
+
+void CD::memory_read()
+{
+    wr_o_memory.write(false);
+    rd_o_memory.write(true);
 }
