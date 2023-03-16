@@ -9,8 +9,10 @@ void core::control_process()
     }
     cout << "core " << core_num_ << " start count" << endl;
 
+    // цикл по задачам
     for (int task_num = 0; task_num < weight_data_.size() - 1; ++task_num)
     {
+        // цикл по нейронам
         int var;
     }
     

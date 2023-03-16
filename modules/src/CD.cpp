@@ -61,12 +61,12 @@ void CD::proccess()
                                                           layers_[layer_num] * layers_[layer_num + 1]);
 
         std::vector<std::vector<float>> weight_data;
-        weight_data.resize(layers_[layer_num]);
+        weight_data.resize(layers_[layer_num + 1]);
         int weight_counter = 0;
-        for (int i = 0; i < layers_[layer_num]; ++i)
+        for (int i = 0; i < layers_[layer_num + 1]; ++i)
         {
-            weight_data[i].resize(layers_[layer_num + 1]);
-            for (int j = 0; j < layers_[layer_num + 1]; ++j)
+            weight_data[i].resize(layers_[layer_num]);
+            for (int j = 0; j < layers_[layer_num]; ++j)
             {
                 weight_data[i][j] = weight[weight_counter++];
             }
@@ -98,8 +98,8 @@ void CD::proccess()
 
             for (int j = 0; j < tasks[i]; ++j)
             {
-                weight_tasks[i][j].resize(layers_[layer_num + 1]);
-                for (int k = 0; k < layers_[layer_num + 1]; ++k)
+                weight_tasks[i][j].resize(layers_[layer_num]);
+                for (int k = 0; k < layers_[layer_num]; ++k)
                 {
                     weight_tasks[i][j][k] = weight_data[j][k];
                 }
