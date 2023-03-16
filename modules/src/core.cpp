@@ -8,8 +8,11 @@ void core::control_process()
         continue;
     }
     cout << "core " << core_num_ << " start count" << endl;
-    
-    // TODO proccess
+
+    for (int task_num = 0; task_num < weight_data_.size() - 1; ++task_num)
+    {
+        int var;
+    }
     
     /*
     data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
