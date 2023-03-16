@@ -100,6 +100,13 @@ void CD::proccess()
         }
         last_memory_busy_address_ += layers_[layer_num + 1];
     }
+    // расчёт закончен. Осталось применить функцию soft_max
+    while (bus_memory_inst->mem_is_busy())
+    {
+        wait();
+    }
+    // std::vector<float> result = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_count_ - 1]);
+    
 }
 
 void CD::write_to_memory(std::vector<float>& data, int len)

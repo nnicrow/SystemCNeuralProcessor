@@ -2,13 +2,13 @@
 
 void core::control_process()
 {
-    while (!is_busy_flag)
+    while (!is_busy_flag_)
     {
         wait();
         continue;
     }
-    // TODO: алгоритм расчета
-
+    cout << "core " << core_num_ << " start count" << endl;
+    
     /*
     data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
     цикл (пока не закончатся пары числе)    
@@ -21,7 +21,7 @@ void core::control_process()
 
 bool core::is_busy(int core_num)
 {
-    return is_busy_flag;
+    return is_busy_flag_;
 }
 
 bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
@@ -30,10 +30,10 @@ bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<floa
     {
         return false;
     }
-
-    // принимает задачу и кидает данные в локальную область памяти, а потом ждем что все выполнится и когда выполняется, ставим is_busy_flag в ложь
-    // TODO: разобрать вектора на двумерный вектор, чтобы было проще работать
-    is_busy_flag = true;
+    neurons_data_ = neurons;
+    weight_data_ = weight;
+    is_busy_flag_ = true;
+    core_num_ = core_num;
     return true;
 }
 

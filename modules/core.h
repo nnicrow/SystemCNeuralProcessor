@@ -1,11 +1,8 @@
 ﻿#pragma once
 #include <sysc/kernel/sc_module.h>
 
-#include "../config.h"
 #include "../interfaces/IMemory.h"
 #include "../interfaces/ICore.h"
-
-enum class core_mode { read, write, count, await };
 
 class core : public sc_module, public ICore
 {
@@ -25,9 +22,10 @@ public:
         sensitive << clk.pos();
     }
 private:
-    std::vector<float> neurons;
-    std::vector<std::vector<float>> weight;
-    bool is_busy_flag;
+    int core_num_;
+    std::vector<float> neurons_data_;
+    std::vector<float> weight_data_;
+    bool is_busy_flag_;
 
     float activ_f(float data);
 };

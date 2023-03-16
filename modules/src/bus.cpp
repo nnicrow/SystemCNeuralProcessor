@@ -34,7 +34,7 @@ bool bus::is_busy(int core_num)
 
 bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
 {
-    return core_inst->core_task(core_num, neurons, weight, start_address);
+    return core_inst[core_num]->core_task(core_num, neurons, weight, start_address);
 }
 
 void bus::bus_write_process()
