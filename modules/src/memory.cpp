@@ -18,3 +18,8 @@ void memory::write(std::vector<float> &data, int start_address)
 		memory_data_[start_address + i] = data[i];
 	}
 }
+
+bool memory::mem_is_busy()
+{
+	return false;
+}

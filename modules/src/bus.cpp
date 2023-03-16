@@ -22,6 +22,11 @@ void bus::write(std::vector<float>& data, int start_address)
     write_queue_.emplace_back(q);
 }
 
+bool bus::mem_is_busy()
+{
+    return memory_inst->mem_is_busy() && !write_queue_.empty();
+}
+
 bool bus::is_busy(int core_num)
 {
     return core_inst[core_num]->is_busy(core_num);

@@ -19,17 +19,6 @@ void core::control_process()
     */
 }
 
-std::vector<float>& core::read(int start_addr, int len)
-{
-    std::vector<float> data;
-    return data;
-}
-
-void core::write(std::vector<float>& data, int start_address)
-{
-    cout << "core" << endl;
-}
-
 bool core::is_busy(int core_num)
 {
     return is_busy_flag;

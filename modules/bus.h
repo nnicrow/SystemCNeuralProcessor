@@ -25,6 +25,7 @@ public:
 
     std::vector<float>& read(int start_addr, int len) override;
     void write(std::vector<float>& data, int start_address) override;
+    bool mem_is_busy() override;
     bool is_busy(int core_num) override;
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address) override;;
 
