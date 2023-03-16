@@ -14,7 +14,7 @@ public:
     void control_process();
     
     bool is_busy(int core_num) override;
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address) override;
+    bool core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address, bool is_last = false) override;
 
     SC_CTOR(core)
     {

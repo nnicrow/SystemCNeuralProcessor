@@ -105,6 +105,7 @@ void CD::proccess()
     {
         wait();
     }
+    // TODO result
     // std::vector<float> result = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_count_ - 1]);
     
 }
