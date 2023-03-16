@@ -10,8 +10,9 @@ std::vector<float>& memory::read(int start_addr, int len)
 	return return_data_;
 }
 
-void memory::write(std::vector<float> &data, int start_address)
+void memory::write(std::vector<float> &data, int start_address, target current_target, int core_num)
 {
+	cout << "Memory write data at " << start_address << endl;
 	for (int i = 0; i < data.size(); ++i)
 	{
 		memory_data_[start_address + i] = data[i];

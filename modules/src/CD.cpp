@@ -5,7 +5,7 @@
 
 void CD::read_data()
 {
-    cout << "read_data start" << endl;
+    cout << "Start read data" << endl;
     ifstream fin("data/weight.txt");
     float var;
     while (!fin.eof())
@@ -18,7 +18,7 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_);
+        bus_inst->write(data, last_memory_busy_address_, target_memory);
         last_memory_busy_address_ += LAYER_FIRST;
         wait();
         
@@ -29,7 +29,7 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_);
+        bus_inst->write(data, last_memory_busy_address_, target_memory);
         last_memory_busy_address_ += LAYER_TWO;
         wait();
         break;
@@ -45,10 +45,10 @@ void CD::read_data()
             data[i] = var;
         }
         address_[address_count_++] = last_memory_busy_address_;
-        bus_inst->write(data, last_memory_busy_address_);
+        bus_inst->write(data, last_memory_busy_address_, target_memory);
         last_memory_busy_address_ += LAYER_FIRST;
         wait();
         break;
     }
-    cout << "read_data end" << endl;
+    cout << "End read data" << endl;
 }

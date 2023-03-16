@@ -9,15 +9,9 @@ public:
     std::vector<float> data_;
     int start_address_;
 
-    queue(): start_address_(0)
-    {
-    }
+    queue();
 
-    queue(const std::vector<float>& data, int start_address)
-    {
-        data_ = data;
-        start_address_ = start_address;
-    }
+    queue(const std::vector<float>& data, int start_address);
 };
 
 
@@ -28,17 +22,16 @@ public:
     sc_port<ISlave, 0, SC_ZERO_OR_MORE_BOUND> slaves_inst;
 
     std::vector<float>& read(int start_addr, int len) override;
-    void write(std::vector<float>& data, int start_address) override;
+    void write(std::vector<float>& data, int start_address, target current_target, int core_num = 0) override;
 
-    void write_process();
+    void bus_write_process();
 
     SC_CTOR(bus)
     {
-        SC_THREAD(write_process)
-        queue_.resize(QUEUE_SIZE);
+        SC_THREAD(bus_write_process)
         sensitive << clk.pos();
     }
 
 private:
-    std::vector<queue> queue_;
+    std::vector<queue> write_queue_;
 };
