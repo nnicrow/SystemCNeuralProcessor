@@ -10,18 +10,21 @@ public:
     sc_port<ISlave> bus_inst;
 
     void read_data();
-    
+
     // Конструктор модуля
     SC_CTOR(CD)
     {
-        /*SC_THREAD(control_process)*/
+        SC_THREAD(read_data)
         address_count_ = 0;
         address_.resize(ADDRESS_SIZE);
         sensitive << clk.pos();
     }
+
 private:
+    /* ГОВНО КОД ДЕНИСА */
+
     std::vector<int> address_;
     int address_count_;
     int last_memory_busy_address_;
-    const int layer_count_ = LAYER_COUNT;
+    const int layer_count_ = LAYER_COUNT; // колличество слоев
 };

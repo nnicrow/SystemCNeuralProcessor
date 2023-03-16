@@ -12,10 +12,10 @@ public:
     sc_in<bool> clk; // тактовый сигнал
     sc_port<ISlave> bus_inst;
 
-    // функция которая будет получать данные весов и которая будет получать данные нейронов*/
+    // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
 
-    void read(int* data, int start_addr, int len) override;
+    std::vector<float>& read(int start_addr, int len) override;
     
     void write(std::vector<float> &data, int start_address) override;;
 

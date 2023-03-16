@@ -9,3 +9,4 @@
 #define MEM_SIZE 2048
 #define ADDRESS_SIZE 64
 #define CORE_COUNT 3
+#define QUEUE_SIZE 3

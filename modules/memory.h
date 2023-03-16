@@ -8,7 +8,7 @@ class memory : public sc_module, public ISlave
 public:
     sc_in<bool> clk;
     
-    void read(int* data, int start_addr, int len) override;
+    std::vector<float>& read(int start_addr, int len) override;
 
     void write(std::vector<float> &data, int start_address) override;
 
@@ -20,4 +20,5 @@ public:
 
 private:
     std::vector<float> memory_data_;
+    std::vector<float> return_data_;
 };
