@@ -8,7 +8,9 @@ void core::control_process()
         continue;
     }
     cout << "core " << core_num_ << " start count" << endl;
+    
     // TODO proccess
+    
     /*
     data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
     цикл (пока не закончатся пары числе)    
@@ -24,7 +26,7 @@ bool core::is_busy(int core_num)
     return is_busy_flag_;
 }
 
-bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address, bool is_last)
+bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last)
 {
     if (is_busy(core_num))
     {

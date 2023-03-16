@@ -32,7 +32,7 @@ bool bus::is_busy(int core_num)
     return core_inst[core_num]->is_busy(core_num);
 }
 
-bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address, bool is_last)
+bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last)
 {
     return core_inst[core_num]->core_task(core_num, neurons, weight, start_address);
 }
