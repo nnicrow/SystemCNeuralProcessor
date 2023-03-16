@@ -53,8 +53,51 @@ void CD::proccess()
         wait();
 
         // запрос данных слоев
-        std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
+        std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 2], layers_[layer_num]);
+
+        // считаем вектор размера задачи
+        std::vector<int> tasks;
+        tasks.resize(CORE_COUNT);
+        int size_of_task = layers_[layer_num] / 3;
+        for (int i = 0; i < CORE_COUNT; ++i)
+        {
+            tasks[i] = size_of_task;
+        }
+        int remainder = layers_[layer_num] % CORE_COUNT;
+        for (int i = 0; i < remainder; ++i)
+        {
+            tasks[i] += 1;
+        }
         
+        // считаем вектор задачи
+        std::vector<std::vector<float>> neurons_tasks;
+        neurons_tasks.resize(CORE_COUNT);
+        int total_neurons = 0;
+        for (int i = 0; i < tasks.size(); ++i)
+        {
+            std::vector<float> vect;
+            vect.resize(tasks[i]);
+            for (int j = 0; j < tasks[i]; ++j)
+            {
+                vect[j] = neurons[total_neurons + i];
+            }
+            total_neurons += tasks[i];
+            neurons_tasks[i] = vect;
+        }
+        
+        // распределяем задачи
+        for (int i = 0; i < CORE_COUNT; ++i)
+        {
+            while (true)
+            {
+                // елси ложь, то ядро не может принять задачу.
+                if (bus_cores_inst->core_task(i, neurons_tasks[i], weight, tasks[i] + last_memory_busy_address_))
+                    break;
+                wait();
+            }
+        }
+        last_memory_busy_address_ += layers_[layer_num + 1];
+
         break;
     }
 }

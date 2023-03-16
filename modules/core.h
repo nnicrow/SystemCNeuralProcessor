@@ -27,5 +27,9 @@ public:
         sensitive << clk.pos();
     }
 private:
+    std::vector<float> neurons;
+    std::vector<std::vector<float>> weight;
     bool is_busy_flag;
+
+    float activ_f(float data);
 };

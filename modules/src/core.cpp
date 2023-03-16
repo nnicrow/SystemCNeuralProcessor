@@ -2,10 +2,13 @@
 
 void core::control_process()
 {
-    while (true)
+    while (!is_busy_flag)
     {
         wait();
+        continue;
     }
+    // TODO: алгоритм расчета
+
     /*
     data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
     цикл (пока не закончатся пары числе)    
@@ -13,11 +16,6 @@ void core::control_process()
         умножаем
         записываем друг 
         записываем в буфер //-- Этап конвеера
-        
-    while ()
-    {
-        data_in.start * 
-    }
     */
 }
 
@@ -43,6 +41,14 @@ bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<floa
     {
         return false;
     }
+
     // принимает задачу и кидает данные в локальную область памяти, а потом ждем что все выполнится и когда выполняется, ставим is_busy_flag в ложь
+    // TODO: разобрать вектора на двумерный вектор, чтобы было проще работать
+    is_busy_flag = true;
     return true;
+}
+
+float core::activ_f(float data)
+{
+    return 1 / (1 + exp(-data));
 }
