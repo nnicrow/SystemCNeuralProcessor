@@ -23,8 +23,6 @@ public:
     }
 
 private:
-    bool data_read_end_;
-    bool data_result_ready_;
     std::vector<int> address_;
     int address_count_;
     int last_memory_busy_address_;

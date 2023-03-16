@@ -8,7 +8,7 @@ void CD::proccess()
     // read data from file
     cout << "Start read data" << endl;
 
-    // weight
+    // read and push weight to memory
     ifstream fin("data/weight.txt");
 
     while (!fin.eof())
@@ -27,9 +27,9 @@ void CD::proccess()
         }
         break;
     }
-    
-    // read neurons
-    ifstream fin2("data/circle.txt");
+
+    // read and push neurons to memory
+    ifstream fin2("data/square.txt");
     while (!fin2.eof())
     {
         std::vector<float> data;
@@ -37,14 +37,26 @@ void CD::proccess()
         data.resize(len);
         for (int i = 0; i < len; ++i)
         {
-            fin >> data[i];
+            fin2 >> data[i];
         }
         write_to_memory(data, len);
         wait();
         break;
     }
     cout << "End read data" << endl;
-    data_read_end_ = true;
+
+    for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
+    {
+        // запрос данных весов
+        int weight_len = layers_[layer_num] * layers_[layer_num + 1];
+        std::vector<float> weight = bus_memory_inst->read(address_[layer_num], weight_len);
+        wait();
+
+        // запрос данных слоев
+        std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
+        
+        break;
+    }
 }
 
 void CD::write_to_memory(std::vector<float>& data, int len)

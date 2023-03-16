@@ -13,8 +13,7 @@ queue::queue(const std::vector<float>& data, int start_address)
 
 std::vector<float>& bus::read(int start_addr, int len)
 {
-    std::vector<float> data;
-    return data;
+    return memory_inst->read(start_addr, len);
 }
 
 void bus::write(std::vector<float>& data, int start_address)
