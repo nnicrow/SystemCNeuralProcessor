@@ -10,7 +10,7 @@ public:
     sc_in<bool> clk; // Тактовый сигнал
     sc_port<IMemory> bus_memory_inst;
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
-    
+
     void proccess();
 
     // Конструктор модуля
@@ -25,9 +25,11 @@ public:
 private:
     bool data_read_end_;
     bool data_result_ready_;
-    
     std::vector<int> address_;
     int address_count_;
     int last_memory_busy_address_;
     const int layer_count_ = LAYER_COUNT; // колличество слоев
+    const std::vector<int> layers_ = LAYER_S;
+    
+    void write_to_memory(std::vector<float>& data, int len);
 };

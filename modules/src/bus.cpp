@@ -28,9 +28,15 @@ bool bus::is_busy(int core_num)
     return core_inst[core_num]->is_busy(core_num);
 }
 
-void bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
+bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
 {
-    // TODO: проверка на занятость ядра, если оно занято, то ожидаем, пока не освободится
+    // gh
+    if (is_busy(core_num))
+    {
+        return false;
+    }
+    
+    return true;
 }
 
 void bus::bus_write_process()

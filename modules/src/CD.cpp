@@ -7,50 +7,49 @@ void CD::proccess()
 {
     // read data from file
     cout << "Start read data" << endl;
+
+    // weight
     ifstream fin("data/weight.txt");
-    float var;
+
     while (!fin.eof())
     {
-        std::vector<float> data;
-        data.resize(LAYER_FIRST);
-        for (int i = 0; i < LAYER_FIRST; ++i)
+        for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
         {
-            fin >> var;
-            data[i] = var;
+            std::vector<float> data;
+            int len = layers_[layer_num] * layers_[layer_num + 1];
+            data.resize(len);
+            for (int i = 0; i < len; ++i)
+            {
+                fin >> data[i];
+            }
+            write_to_memory(data, len);
+            wait();
         }
-        address_[address_count_++] = last_memory_busy_address_;
-        bus_memory_inst->write(data, last_memory_busy_address_);
-        last_memory_busy_address_ += LAYER_FIRST;
-        wait();
-        
-        data.resize(LAYER_TWO);
-        for (int i = 0; i < LAYER_TWO; ++i)
-        {
-            fin >> var;
-            data[i] = var;
-        }
-        address_[address_count_++] = last_memory_busy_address_;
-        bus_memory_inst->write(data, last_memory_busy_address_);
-        last_memory_busy_address_ += LAYER_TWO;
-        wait();
         break;
     }
+    
+    // read neurons
     ifstream fin2("data/circle.txt");
     while (!fin2.eof())
     {
         std::vector<float> data;
-        data.resize(LAYER_FIRST);
-        for (int i = 0; i < LAYER_FIRST; ++i)
+        int len = layers_[0];
+        data.resize(len);
+        for (int i = 0; i < len; ++i)
         {
-            fin2 >> var;
-            data[i] = var;
+            fin >> data[i];
         }
-        address_[address_count_++] = last_memory_busy_address_;
-        bus_memory_inst->write(data, last_memory_busy_address_);
-        last_memory_busy_address_ += LAYER_FIRST;
+        write_to_memory(data, len);
         wait();
         break;
     }
     cout << "End read data" << endl;
     data_read_end_ = true;
+}
+
+void CD::write_to_memory(std::vector<float>& data, int len)
+{
+    address_[address_count_++] = last_memory_busy_address_;
+    bus_memory_inst->write(data, last_memory_busy_address_);
+    last_memory_busy_address_ += len;
 }

@@ -5,7 +5,6 @@ void core::control_process()
     while (true)
     {
         wait();
-
     }
     /*
     data_in // массив выходов с предыдущего слоя, массив вессов текщего слоя 
@@ -28,7 +27,7 @@ std::vector<float>& core::read(int start_addr, int len)
     return data;
 }
 
-void core::write(std::vector<float> &data, int start_address)
+void core::write(std::vector<float>& data, int start_address)
 {
     cout << "core" << endl;
 }
@@ -38,7 +37,12 @@ bool core::is_busy(int core_num)
     return is_busy_flag;
 }
 
-void core::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
+bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<float>& weight, int start_address)
 {
-    
+    if (is_busy(core_num))
+    {
+        return false;
+    }
+    // принимает задачу и кидает данные в локальную область памяти, а потом ждем что все выполнится и когда выполняется, ставим is_busy_flag в ложь
+    return true;
 }

@@ -14,9 +14,7 @@ int sc_main(int argc, char* argv[])
     
     // global parameters
     sc_clock clk("clk_i", sc_time(10, SC_NS));
-
-    // memory
-
+    
     // memory
     memory.clk(clk);
     
