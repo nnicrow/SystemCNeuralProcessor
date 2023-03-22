@@ -17,6 +17,9 @@ public:
 
     sc_in<float> bus_memory_data_o[BUFFER_SIZE];
     sc_in<bool> bus_memory_is_busy;
+
+    // core
+    sc_in<bool> bus_core_is_busy[CORE_COUNT];
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
     

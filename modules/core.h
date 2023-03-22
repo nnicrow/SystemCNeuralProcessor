@@ -8,7 +8,8 @@ class core : public sc_module, public ICore
 {
 public:
     sc_in<bool> clk; // тактовый сигнал
-
+    sc_out<bool> core_is_busy;
+    
     // memory
     sc_out<int> bus_memory_start_addr_i;
     sc_out<int> bus_memory_len_i;
@@ -17,8 +18,7 @@ public:
     
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
-
-    bool is_busy(int core_num) override;
+    
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
                    int start_address, bool is_last = false) override;
 

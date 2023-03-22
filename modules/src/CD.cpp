@@ -124,9 +124,10 @@ void CD::proccess()
             }
             last_memory_busy_address_ += tasks[i];
         }
+        wait(2);
         for (int i = 0; i < CORE_COUNT; ++i)
         {
-            while (bus_cores_inst->is_busy(i))
+            while (bus_core_is_busy[i].read())
             {
                 wait(CORE_COUNT + 1);
             }

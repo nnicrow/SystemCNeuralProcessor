@@ -15,6 +15,8 @@ void core::control_process()
             result_ = softmax(neurons_data_);
             memory_write(result_);
             is_busy_flag_ = false;
+            core_is_busy.write(is_busy_flag_);
+            wait();
             return;
         }
     
@@ -31,6 +33,7 @@ void core::control_process()
 
         memory_write(result_);
         is_busy_flag_ = false;
+        core_is_busy.write(is_busy_flag_);
         wait();
     }
 }
@@ -55,19 +58,16 @@ void core::memory_write(const std::vector<float>& data)
     bus_memory_wr.write(false);
 }
 
-bool core::is_busy(int core_num)
-{
-    return is_busy_flag_;
-}
-
 bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
                      int start_address, bool is_last)
 {
-    if (is_busy(core_num))
+    if (is_busy_flag_)
     {
         return false;
     }
     is_busy_flag_ = true;
+    core_is_busy.write(is_busy_flag_);
+    wait();
     
     neurons_data_ = neurons;
     weight_data_ = weight;

@@ -11,11 +11,6 @@ queue::queue(const std::vector<float>& data, int start_address)
     start_address_ = start_address;
 }
 
-bool bus::is_busy(int core_num)
-{
-    return core_inst[core_num]->is_busy(core_num);
-}
-
 bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
                     int start_address, bool is_last)
 {
@@ -33,6 +28,7 @@ void bus::process()
             {
                 get_data_from_port(i);
             }
+            bus_core_is_busy[i].write(core_is_busy[i].read());
         }
 
         // если есть что писать, то пишем в память
