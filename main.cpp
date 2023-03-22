@@ -14,6 +14,15 @@ int sc_main(int argc, char* argv[])
     
     // global parameters
     sc_clock clk("clk_i", sc_time(10, SC_NS));
+
+    // memory
+    sc_signal<int> memory_start_addr_i;
+    sc_signal<int> memory_len_i;
+    sc_signal<bool> memory_is_busy;
+    sc_signal<float> memory_data_i[BUFFER_SIZE];
+    sc_signal<float> memory_data_o[BUFFER_SIZE];
+    sc_signal<bool> memory_wr;
+    sc_signal<bool> memory_rd;
     
     // memory
     memory.clk(clk);
