@@ -153,7 +153,7 @@ void CD::proccess()
     last_memory_busy_address_ += layers_[layer_count_ - 1];
     address_[address_count_] = last_memory_busy_address_;
     wait();
-    std::vector<float> result = bus_memory_inst->read(address_[address_count_ - 1], layers_[layer_count_ - 1]);
+    std::vector<float> result = bus_memory_inst->read(address_[address_count_], layers_[layer_count_ - 1]);
     out_result(result);
 }
 

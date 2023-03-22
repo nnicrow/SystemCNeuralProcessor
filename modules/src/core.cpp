@@ -24,7 +24,7 @@ void core::control_process()
             float res = 0;
             for (int neuron = 0; neuron < weight_data_[task_num].size(); ++neuron)
             {
-                res += weight_data_[task_num][neuron] * neurons_data_[task_num];
+                res += weight_data_[task_num][neuron] * neurons_data_[neuron];
             }
             result_[task_num] = activ_f(res);
         }

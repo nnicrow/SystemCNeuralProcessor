@@ -8,4 +8,4 @@
 #define ADDRESS_SIZE (20480 / 64)
 #define CORE_COUNT 1
 #define QUEUE_SIZE (CORE_COUNT + 1)
-#define FILE_NAME "data/triangle.txt"
+#define FILE_NAME "data/square.txt"
