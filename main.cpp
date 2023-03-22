@@ -26,10 +26,30 @@ int sc_main(int argc, char* argv[])
     
     // memory
     memory.clk(clk);
+    memory.memory_start_addr_i(memory_start_addr_i);
+    memory.memory_len_i(memory_len_i);
+    memory.memory_wr(memory_wr);
+    memory.memory_rd(memory_rd);
+    for (int i = 0; i < BUFFER_SIZE ; ++i)
+    {
+        memory.memory_data_i[i](memory_data_i[i]);
+        memory.memory_data_o[i](memory_data_o[i]);
+    }
+    memory.memory_is_busy(memory_is_busy);
     
     // bus
     bus.clk(clk);
-    bus.memory_inst(memory);
+    /*bus.memory_inst(memory);*/
+    bus.memory_start_addr_i(memory_start_addr_i);
+    bus.memory_len_i(memory_len_i);
+    bus.memory_wr(memory_wr);
+    bus.memory_rd(memory_rd);
+    for (int i = 0; i < BUFFER_SIZE ; ++i)
+    {
+        bus.memory_data_i[i](memory_data_i[i]);
+        bus.memory_data_o[i](memory_data_o[i]);
+    }
+    bus.memory_is_busy(memory_is_busy);
 
     // CD
     CD.clk(clk);

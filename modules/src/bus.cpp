@@ -13,7 +13,8 @@ queue::queue(const std::vector<float>& data, int start_address)
 
 std::vector<float>& bus::read(int start_addr, int len)
 {
-    return memory_inst->read(start_addr, len);
+    /*return memory_inst->read(start_addr, len);*/
+    return test;
 }
 
 void bus::write(std::vector<float>& data, int start_address)
@@ -24,7 +25,8 @@ void bus::write(std::vector<float>& data, int start_address)
 
 bool bus::mem_is_busy()
 {
-    return memory_inst->mem_is_busy() && !write_queue_.empty();
+    /*return memory_inst->mem_is_busy() && !write_queue_.empty();*/
+    return true;
 }
 
 bool bus::is_busy(int core_num)
@@ -49,7 +51,7 @@ void bus::bus_write_process()
         
         queue q = write_queue_.front();
         write_queue_.erase(write_queue_.begin());
-        memory_inst->write(q.data_, q.start_address_);
+        /*memory_inst->write(q.data_, q.start_address_);*/
         wait();
     }
 }

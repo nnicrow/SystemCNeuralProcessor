@@ -20,7 +20,18 @@ class bus : public sc_module, public IMemory, public ICore
 {
 public:
     sc_in<bool> clk;
-    sc_port<IMemory> memory_inst;
+
+    // memory
+    sc_out<int> memory_start_addr_i;
+    sc_out<int> memory_len_i;
+    sc_out<float> memory_data_i[BUFFER_SIZE];
+    sc_out<bool> memory_wr;
+    sc_out<bool> memory_rd;
+    
+    sc_in<float> memory_data_o[BUFFER_SIZE];
+    sc_in<bool> memory_is_busy;
+    
+    /*sc_port<IMemory> memory_inst;*/
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
 
     std::vector<float>& read(int start_addr, int len) override;
@@ -39,4 +50,5 @@ public:
 
 private:
     std::vector<queue> write_queue_;
+    std::vector<float> test;
 };
