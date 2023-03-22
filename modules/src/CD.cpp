@@ -109,7 +109,8 @@ void CD::proccess()
 
             total_neurons += tasks[i];
         }
-
+        
+        memory_address_selection(layers_[layer_num + 1]);
         // распределяем задачи
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -120,7 +121,7 @@ void CD::proccess()
                     break;
                 wait();
             }
-            memory_address_selection(tasks[i]);
+            last_memory_busy_address_ += tasks[i]; 
         }
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -146,6 +147,7 @@ void CD::proccess()
             break;
         wait();
         memory_address_selection(layers_[layer_count_ - 1]);
+        last_memory_busy_address_ += layers_[layer_count_ - 1];
     }
     wait();
     std::vector<float> result = bus_memory_inst->read(address_.back(), layers_[layer_count_ - 1]);
@@ -168,7 +170,7 @@ void CD::memory_address_selection(const int len)
 {
     address_.resize(address_.size() + 1);
     address_[address_count_++] = last_memory_busy_address_;
-    last_memory_busy_address_ += len;
+    // last_memory_busy_address_ += len;
 }
 
 enum result_enum { circle, square, triangle };
