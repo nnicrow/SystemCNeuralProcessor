@@ -61,7 +61,7 @@ void CD::proccess()
 
         // запрос данных весов
         std::vector<float> weight = memory_read(address_[layer_num],
-                                                          layers_[layer_num] * layers_[layer_num + 1]);
+                                                layers_[layer_num] * layers_[layer_num + 1]);
 
         std::vector<std::vector<float>> weight_data;
         weight_data.resize(layers_[layer_num + 1]);
@@ -110,7 +110,7 @@ void CD::proccess()
 
             total_neurons += tasks[i];
         }
-        
+
         memory_address_selection(layers_[layer_num + 1]);
         // распределяем задачи
         for (int i = 0; i < CORE_COUNT; ++i)
@@ -188,12 +188,25 @@ void CD::memory_write(const std::vector<float>& data)
 
 std::vector<float> CD::memory_read(int start_address, int len)
 {
-    bus_memory_rd.write(true);
-    std::vector<float> data;
-    data.resize(len);
-    wait(10);
+    std::vector<float> res_data;
+    res_data.resize(len);
+    
+    int num_packets = len / BUFFER_SIZE + 1;
+    for (int i = 0; i < num_packets; ++i)
+    {
+        const int start_index = i * BUFFER_SIZE;
+        const int end_index = std::min(start_index + BUFFER_SIZE, len);
+        bus_memory_start_addr_i.write(start_index);
+        bus_memory_len_i.write(end_index);
+        bus_memory_rd.write(true);
+        while (bus_memory_is_busy.read())
+        {
+            wait();
+        }
+        res_data[i] = bus_memory_data_o[i];
+    }
     bus_memory_rd.write(false);
-    return data;
+    return res_data;
 }
 
 void CD::memory_address_selection(const int len)
