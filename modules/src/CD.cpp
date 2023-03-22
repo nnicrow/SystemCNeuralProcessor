@@ -199,10 +199,7 @@ std::vector<float> CD::memory_read(int start_address, int len)
         bus_memory_start_addr_i.write(start_index);
         bus_memory_len_i.write(end_index);
         bus_memory_rd.write(true);
-        while (bus_memory_is_busy.read())
-        {
-            wait();
-        }
+        wait(2);
         res_data[i] = bus_memory_data_o[i];
     }
     bus_memory_rd.write(false);
