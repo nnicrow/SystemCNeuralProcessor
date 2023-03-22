@@ -44,15 +44,16 @@ void CD::proccess()
         wait();
         break;
     }
+    while (bus_memory_inst->mem_is_busy())
+    {
+        wait();
+    }
     cout << "End read data" << endl;
 
+
+    // расчёты
     for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
     {
-        while (bus_memory_inst->mem_is_busy())
-        {
-            wait();
-        }
-
         // запрос данных слоев
         std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
         wait();
@@ -92,7 +93,6 @@ void CD::proccess()
         }
 
         // считаем вектор задачи
-        // TODO: хуяня
         int total_neurons = 0;
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -120,8 +120,7 @@ void CD::proccess()
                     break;
                 wait();
             }
-            last_memory_busy_address_ += tasks[i];
-            address_[address_count_++] = last_memory_busy_address_;
+            memory_address_selection(tasks[i]);
         }
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -130,17 +129,14 @@ void CD::proccess()
                 wait(CORE_COUNT + 1);
             }
         }
-    }
-    // расчёт закончен. Осталось применить функцию soft_max
-    while (bus_memory_inst->mem_is_busy())
-    {
-        wait();
+
+        while (bus_memory_inst->mem_is_busy())
+        {
+            wait();
+        }
     }
 
-    std::vector<float> neurons = bus_memory_inst->read(address_[layer_count_ + layer_count_ - 1],
-                                                       layers_[layer_count_ - 1]);
-    last_memory_busy_address_ += layers_[layer_count_ - 1];
-    address_[address_count_++] = last_memory_busy_address_;
+    std::vector<float> neurons = bus_memory_inst->read(address_.back(), layers_[layer_count_ - 1]);
     wait();
     std::vector<std::vector<float>> weight_task;
     while (true)
@@ -149,18 +145,29 @@ void CD::proccess()
         if (bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_, true))
             break;
         wait();
+        memory_address_selection(layers_[layer_count_ - 1]);
     }
-    last_memory_busy_address_ += layers_[layer_count_ - 1];
-    address_[address_count_] = last_memory_busy_address_;
     wait();
-    std::vector<float> result = bus_memory_inst->read(address_[address_count_], layers_[layer_count_ - 1]);
+    std::vector<float> result = bus_memory_inst->read(address_.back(), layers_[layer_count_ - 1]);
+    for (const float i : result)
+    {
+        cout << i << endl;
+    }
     out_result(result);
 }
 
-void CD::write_to_memory(std::vector<float>& data, int len)
+void CD::write_to_memory(std::vector<float>& data, const int len)
 {
+    address_.resize(address_.size() + 1);
     address_[address_count_++] = last_memory_busy_address_;
     bus_memory_inst->write(data, last_memory_busy_address_);
+    last_memory_busy_address_ += len;
+}
+
+void CD::memory_address_selection(const int len)
+{
+    address_.resize(address_.size() + 1);
+    address_[address_count_++] = last_memory_busy_address_;
     last_memory_busy_address_ += len;
 }
 
@@ -175,6 +182,7 @@ inline const char* ToString(result_enum e)
     case triangle: return "Triangle";
     }
 }
+
 void CD::out_result(std::vector<float>& data)
 {
     int max_index = 0;

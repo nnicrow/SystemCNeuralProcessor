@@ -18,7 +18,6 @@ public:
     {
         SC_THREAD(proccess)
         address_count_ = 0;
-        address_.resize(ADDRESS_SIZE);
         sensitive << clk.pos();
     }
 
@@ -30,5 +29,6 @@ private:
     const std::vector<int> layers_ = LAYER_S;
     
     void write_to_memory(std::vector<float>& data, int len);
+    void memory_address_selection(int len);
     void out_result(std::vector<float>& data);
 };
