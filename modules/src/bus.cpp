@@ -11,10 +11,10 @@ queue::queue(const std::vector<float>& data, int start_address)
     start_address_ = start_address;
 }
 
-std::vector<float>& bus::read(int start_addr, int len)
+/*std::vector<float>& bus::read(int start_addr, int len)
 {
     // TODO: 
-    /*return memory_inst->read(start_addr, len);*/
+    /*return memory_inst->read(start_addr, len);#1#
     return read_data;
 }
 
@@ -30,9 +30,9 @@ void bus::write(std::vector<float>& data, int start_address)
 
 bool bus::mem_is_busy()
 {
-    /*return memory_inst->mem_is_busy() && !write_queue_.empty();*/
+    /*return memory_inst->mem_is_busy() && !write_queue_.empty();#1#
     return memory_is_busy.read() && !write_queue_.empty();
-}
+}*/
 
 bool bus::is_busy(int core_num)
 {

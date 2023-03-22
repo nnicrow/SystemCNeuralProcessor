@@ -5,7 +5,7 @@
 
 void CD::proccess()
 {
-    // read data from file
+    /*// read data from file
     cout << "Start read data" << endl;
 
     // read and push weight to memory
@@ -158,15 +158,15 @@ void CD::proccess()
     {
         cout << i << endl;
     }
-    out_result(result);
+    out_result(result);*/
 }
 
 void CD::write_to_memory(std::vector<float>& data, const int len)
 {
-    address_.resize(address_.size() + 1);
+    /*address_.resize(address_.size() + 1);
     address_[address_count_++] = last_memory_busy_address_;
     bus_memory_inst->write(data, last_memory_busy_address_);
-    last_memory_busy_address_ += len;
+    last_memory_busy_address_ += len;*/
 }
 
 void CD::memory_address_selection(const int len)

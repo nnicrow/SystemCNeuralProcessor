@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../interfaces/IMemory.h"
+
 #include "../interfaces/ICore.h"
 #include "../config.h"
 
@@ -8,7 +8,16 @@ class CD : public sc_module
 public:
     // global
     sc_in<bool> clk; // Тактовый сигнал
-    sc_port<IMemory> bus_memory_inst;
+
+    sc_out<int> bus_memory_start_addr_i;
+    sc_out<int> bus_memory_len_i;
+    sc_out<float> bus_memory_data_i[BUFFER_SIZE];
+    sc_out<bool> bus_memory_wr;
+    sc_out<bool> bus_memory_rd;
+
+    sc_in<float> bus_memory_data_o[BUFFER_SIZE];
+    sc_in<bool> bus_memory_is_busy;
+    
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
 
     void proccess();

@@ -183,7 +183,6 @@
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="interfaces\ICore.h" />
-    <ClInclude Include="interfaces\IMemory.h" />
     <ClInclude Include="modules\bus.h" />
     <ClInclude Include="modules\CD.h" />
     <ClInclude Include="modules\core.h" />

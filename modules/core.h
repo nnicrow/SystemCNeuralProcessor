@@ -1,15 +1,20 @@
 ﻿#pragma once
 #include <sysc/kernel/sc_module.h>
 
-#include "../interfaces/IMemory.h"
+#include "../config.h"
 #include "../interfaces/ICore.h"
 
 class core : public sc_module, public ICore
 {
 public:
     sc_in<bool> clk; // тактовый сигнал
-    sc_port<IMemory> bus_inst;
 
+    // memory
+    sc_out<int> bus_memory_start_addr_i;
+    sc_out<int> bus_memory_len_i;
+    sc_out<float> bus_memory_data_i[BUFFER_SIZE];
+    sc_out<bool> bus_memory_wr;
+    
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
 

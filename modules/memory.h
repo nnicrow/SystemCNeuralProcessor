@@ -1,9 +1,8 @@
 ﻿#pragma once
 
 #include "../config.h"
-#include "../interfaces/IMemory.h"
 
-class memory : public sc_module /*, public IMemory*/
+class memory : public sc_module
 {
 public:
     sc_in<bool> clk;

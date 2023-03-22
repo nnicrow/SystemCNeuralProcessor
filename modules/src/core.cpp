@@ -2,7 +2,7 @@
 
 void core::control_process()
 {
-    while (true)
+    /*while (true)
     {
         while (!is_busy_flag_)
         {
@@ -32,7 +32,7 @@ void core::control_process()
         bus_inst->write(result_, start_address_);
         is_busy_flag_ = false;
         wait();
-    }
+    }*/
 }
 
 bool core::is_busy(int core_num)
