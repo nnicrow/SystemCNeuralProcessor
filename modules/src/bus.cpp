@@ -45,17 +45,18 @@ void bus::process()
         }
         else if (bus_memory_rd.read())
         {
-            memory_wr.write(false);
             bus_memory_is_busy.write(true);
             memory_start_addr_i.write(bus_memory_start_addr_i->read());
             memory_len_i.write(bus_memory_len_i[0]->read());
-            memory_rd.write(false);
+            memory_rd.write(true);
             wait();
             
             for (int i = 0; i < memory_len_i.read(); ++i)
             {
                 bus_memory_data_o->write(memory_data_o->read());    
             }
+            wait();
+            memory_rd.write(false);
         }
         else
         {

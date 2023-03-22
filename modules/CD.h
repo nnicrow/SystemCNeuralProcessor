@@ -41,4 +41,5 @@ private:
     void memory_address_selection(int len);
     void out_result(std::vector<float>& data);
     void memory_write(const std::vector<float>& data);
+    std::vector<float> memory_read(int start_address, int len);
 };

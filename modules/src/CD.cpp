@@ -22,7 +22,6 @@ void CD::proccess()
                 fin >> data[i];
             }
             memory_write(data);
-
             end_write_to_memory(len);
         }
         break;
@@ -32,7 +31,7 @@ void CD::proccess()
         wait();
     }
     // read and push neurons to memory
-    /*std::string filename = FILE_NAME;
+    std::string filename = FILE_NAME;
     ifstream fin2(filename);
     while (!fin2.eof())
     {
@@ -43,15 +42,7 @@ void CD::proccess()
         {
             fin2 >> data[i];
         }
-        int num_packets = data.size() / BUFFER_SIZE;
-        for (int i = 0; i < num_packets; ++i)
-        {
-            int start_index = i * BUFFER_SIZE;
-            int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
-            std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
-            memory_write(packet_data, i);
-            wait();
-        }
+        memory_write(data);
         end_write_to_memory(len);
         break;
     }
@@ -66,11 +57,10 @@ void CD::proccess()
     for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
     {
         // запрос данных слоев
-        std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
-        wait();
+        std::vector<float> neurons = memory_read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
 
         // запрос данных весов
-        std::vector<float> weight = bus_memory_inst->read(address_[layer_num],
+        std::vector<float> weight = memory_read(address_[layer_num],
                                                           layers_[layer_num] * layers_[layer_num + 1]);
 
         std::vector<std::vector<float>> weight_data;
@@ -142,13 +132,13 @@ void CD::proccess()
             }
         }
 
-        while (bus_memory_inst->mem_is_busy())
+        while (bus_memory_is_busy.read())
         {
             wait();
         }
     }
 
-    std::vector<float> neurons = bus_memory_inst->read(address_.back(), layers_[layer_count_ - 1]);
+    std::vector<float> neurons = memory_read(address_.back(), layers_[layer_count_ - 1]);
     wait();
     std::vector<std::vector<float>> weight_task;
     while (true)
@@ -161,12 +151,12 @@ void CD::proccess()
         last_memory_busy_address_ += layers_[layer_count_ - 1];
     }
     wait();
-    std::vector<float> result = bus_memory_inst->read(address_.back(), layers_[layer_count_ - 1]);
+    std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
     for (const float i : result)
     {
         cout << i << endl;
     }
-    out_result(result);*/
+    out_result(result);
 }
 
 void CD::end_write_to_memory(const int len)
@@ -194,6 +184,16 @@ void CD::memory_write(const std::vector<float>& data)
         bus_memory_wr.write(true);
         wait();
     }
+}
+
+std::vector<float> CD::memory_read(int start_address, int len)
+{
+    bus_memory_rd.write(true);
+    std::vector<float> data;
+    data.resize(len);
+    wait(10);
+    bus_memory_rd.write(false);
+    return data;
 }
 
 void CD::memory_address_selection(const int len)

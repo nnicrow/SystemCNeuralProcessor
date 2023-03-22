@@ -13,16 +13,7 @@ void core::control_process()
         if (is_last_flag_)
         {
             result_ = softmax(neurons_data_);
-            
-            int num_packets = result_.size() / BUFFER_SIZE;
-            for (int i = 0; i < num_packets; ++i)
-            {
-                int start_index = i * BUFFER_SIZE;
-                int end_index = std::min(start_index + BUFFER_SIZE, (int)result_.size());
-                std::vector<float> packet_data(result_.begin() + start_index, result_.begin() + end_index);
-                memory_write(packet_data, i, start_index);
-                wait();
-            }
+            memory_write(result_);
             is_busy_flag_ = false;
             return;
         }
@@ -38,28 +29,30 @@ void core::control_process()
             result_[task_num] = activ_f(res);
         }
 
-        int num_packets = result_.size() / BUFFER_SIZE;
-        for (int i = 0; i < num_packets; ++i)
-        {
-            int start_index = i * BUFFER_SIZE;
-            int end_index = std::min(start_index + BUFFER_SIZE, (int)result_.size());
-            std::vector<float> packet_data(result_.begin() + start_index, result_.begin() + end_index);
-            memory_write(packet_data, i, start_index);
-            wait();
-        }
+        memory_write(result_);
         is_busy_flag_ = false;
         wait();
     }
 }
 
-void core::memory_write(std::vector<float>& packet_data, int i, int start_index)
+void core::memory_write(const std::vector<float>& data)
 {
-    bus_memory_start_addr_i.write(i * packet_data.size() + start_index);
-    bus_memory_len_i.write(packet_data.size());
-    for (int k = 0; k < packet_data.size(); ++k)
+    int num_packets = data.size() / BUFFER_SIZE + 1;
+    for (int i = 0; i < num_packets; ++i)
     {
-        bus_memory_data_i->write(packet_data[k]);
+        const int start_index = i * BUFFER_SIZE;
+        const int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
+        std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
+        bus_memory_start_addr_i.write(start_index + start_address_);
+        bus_memory_len_i.write(packet_data.size());
+        for (int j = 0; j < packet_data.size(); ++j)
+        {
+            bus_memory_data_i[j]->write(packet_data[j]);
+        }
+        bus_memory_wr.write(true);
+        wait();
     }
+    bus_memory_wr.write(false);
 }
 
 bool core::is_busy(int core_num)
