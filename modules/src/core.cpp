@@ -24,7 +24,7 @@ void core::control_process()
             float res = 0;
             for (int neuron = 0; neuron < weight_data_[task_num].size(); ++neuron)
             {
-                res += weight_data_[task_num][neuron] * neurons_data_[task_num];
+                res += weight_data_[task_num][neuron] * neurons_data_[neuron];
             }
             result_[task_num] = activ_f(res);
         }
@@ -65,14 +65,16 @@ float core::activ_f(float data)
 
 std::vector<float> core::softmax(std::vector<float> t)
 {
-    std::vector<float> out(t.size());
+    std::vector<float> out;
+    out.resize(t.size());
     double sum = 0;
-    for (int i = 0; i < t.size(); i++) {
+    for (int i = 0; i < t.size(); ++i) {
         out[i] = std::exp(t[i]);
         sum += out[i];
     }
-    for (int i = 0; i < t.size(); i++) {
+    for (int i = 0; i < t.size(); ++i) {
         out[i] /= sum;
+
     }
     return out;
 }
