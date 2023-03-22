@@ -39,13 +39,16 @@ public:
 
     sc_out<float> bus_memory_data_o[BUFFER_SIZE];
     sc_out<bool> bus_memory_is_busy;
+
+    // core
+    sc_in<bool> core_is_busy[CORE_COUNT];
+    sc_out<bool> bus_core_is_busy[CORE_COUNT];
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
 
     /*std::vector<float>& read(int start_addr, int len) override;
     void write(std::vector<float>& data, int start_address) override;
     bool mem_is_busy() override;*/
-    bool is_busy(int core_num) override;
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last = false) override;;
     
     void process();

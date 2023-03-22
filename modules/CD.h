@@ -20,7 +20,7 @@ public:
     sc_in<bool> bus_memory_is_busy;
 
     // cores
-    sc_in<bool> core_is_busy[CORE_COUNT];
+    sc_in<bool> bus_core_is_busy[CORE_COUNT];
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
     
     void proccess();

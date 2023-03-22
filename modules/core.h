@@ -20,8 +20,7 @@ public:
     
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
-
-    bool is_busy(int core_num) override;
+    
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
                    int start_address, bool is_last = false) override;
 
