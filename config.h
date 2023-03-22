@@ -8,4 +8,4 @@
 #define CORE_COUNT 3
 #define BUFFER_SIZE 16
 #define QUEUE_SIZE (CORE_COUNT + 1)
-#define FILE_NAME "data/square.txt"
+#define FILE_NAME "data/triangle.txt"

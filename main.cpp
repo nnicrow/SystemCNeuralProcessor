@@ -101,6 +101,6 @@ int sc_main(int argc, char* argv[])
         bus.core_inst(cores[i]);
     }
 
-    sc_start(sc_time(10000, SC_NS));
+    sc_start(sc_time(20000, SC_NS));
     return 0;
 }

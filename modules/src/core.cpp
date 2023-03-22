@@ -50,7 +50,7 @@ void core::memory_write(const std::vector<float>& data)
             bus_memory_data_i[j]->write(packet_data[j]);
         }
         bus_memory_wr.write(true);
-        wait();
+        wait(2);
     }
     bus_memory_wr.write(false);
 }

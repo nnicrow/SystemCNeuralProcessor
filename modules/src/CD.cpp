@@ -139,7 +139,7 @@ void CD::proccess()
     }
 
     std::vector<float> neurons = memory_read(address_.back(), layers_[layer_count_ - 1]);
-    wait();
+    
     std::vector<std::vector<float>> weight_task;
     while (true)
     {
