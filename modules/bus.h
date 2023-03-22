@@ -39,16 +39,19 @@ public:
     bool mem_is_busy() override;
     bool is_busy(int core_num) override;
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last = false) override;;
-
-    void bus_write_process();
+    
+    void process();
 
     SC_CTOR(bus)
     {
-        SC_THREAD(bus_write_process)
+        SC_THREAD(process)
         sensitive << clk.pos();
     }
 
 private:
     std::vector<queue> write_queue_;
-    std::vector<float> test;
+    std::vector<queue> read_queue_;
+    std::vector<float> read_data;
+    void memory_write(const queue& queue);
+    void memory_read();
 };

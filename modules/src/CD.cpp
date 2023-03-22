@@ -27,7 +27,10 @@ void CD::proccess()
         }
         break;
     }
-
+    while (bus_memory_inst->mem_is_busy())
+    {
+        wait();
+    }
     // read and push neurons to memory
     std::string filename = FILE_NAME;
     ifstream fin2(filename);

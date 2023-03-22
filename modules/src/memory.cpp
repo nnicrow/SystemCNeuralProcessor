@@ -1,25 +1,41 @@
 ﻿#include "../memory.h"
 
-/*std::vector<float>& memory::read(int start_addr, int len)
+void memory::read()
 {
-	return_data_.resize(len);
-	for (int i = 0; i < len; ++i)
-	{
-		return_data_[i] = memory_data_[start_addr + i];
-	}
-	return return_data_;
+    for (int i = 0; i < memory_len_i.read(); ++i)
+    {
+        memory_data_o[i].write(memory_data_[memory_start_addr_i.read() + i]);
+    }
 }
 
-void memory::write(std::vector<float> &data, int start_address)
+void memory::write()
 {
-	cout << "Memory write data at " << start_address << endl;
-	for (int i = 0; i < data.size(); ++i)
-	{
-		memory_data_[start_address + i] = data[i];
-	}
+    cout << "Memory write data at " << memory_start_addr_i.read() << endl;
+    for (int i = 0; i < memory_len_i.read(); ++i)
+    {
+        memory_data_[memory_start_addr_i.read() + i] = memory_data_i[i];
+    }
 }
 
-bool memory::mem_is_busy()
+void memory::proccess()
 {
-	return false;
-}*/
+    while (true)
+    {
+        // если запись
+        if (memory_wr.read())
+        {
+            memory_is_busy.write(true);
+            write();
+        }
+        // если чтение
+        else if (memory_rd.read())
+        {
+            memory_is_busy.write(true);
+            read();
+        }
+        else
+            memory_is_busy.write(false);
+
+        wait();
+    }
+}
