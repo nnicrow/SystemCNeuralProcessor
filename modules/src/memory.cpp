@@ -23,6 +23,8 @@ void memory::proccess()
 {
     while (true)
     {
+        wait();
+        
         // если запись
         if (memory_wr.read())
         {
@@ -43,7 +45,5 @@ void memory::proccess()
         }
         else
             memory_is_busy.write(false);
-
-        wait();
     }
 }

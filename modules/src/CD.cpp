@@ -21,16 +21,8 @@ void CD::proccess()
             {
                 fin >> data[i];
             }
+            memory_write(data);
 
-            int num_packets = data.size() / BUFFER_SIZE;
-            for (int i = 0; i < num_packets; ++i)
-            {
-                int start_index = i * BUFFER_SIZE;
-                int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
-                std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
-                memory_write(packet_data, i);
-                wait();
-            }
             end_write_to_memory(len);
         }
         break;
@@ -40,7 +32,7 @@ void CD::proccess()
         wait();
     }
     // read and push neurons to memory
-    std::string filename = FILE_NAME;
+    /*std::string filename = FILE_NAME;
     ifstream fin2(filename);
     while (!fin2.eof())
     {
@@ -68,7 +60,7 @@ void CD::proccess()
         wait();
     }
     cout << "End read data" << endl;
-    /*bus_memory_rd.write(true);
+    bus_memory_rd.write(true);
 
     // расчёты
     for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
@@ -185,16 +177,23 @@ void CD::end_write_to_memory(const int len)
     bus_memory_wr.write(false);
 }
 
-void CD::memory_write(std::vector<float>& packet_data, int i)
+void CD::memory_write(const std::vector<float>& data)
 {
-    bus_memory_start_addr_i.write(i * packet_data.size() + last_memory_busy_address_);
-    bus_memory_len_i.write(packet_data.size());
-    for (int j = 0; j < packet_data.size(); ++j)
+    int num_packets = data.size() / BUFFER_SIZE;
+    for (int i = 0; i < num_packets; ++i)
     {
-        cout << packet_data[j] << endl;
-        bus_memory_data_i[j]->write(packet_data[j]);
+        const int start_index = i * BUFFER_SIZE;
+        const int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
+        std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
+        bus_memory_start_addr_i.write(i * packet_data.size() + last_memory_busy_address_);
+        bus_memory_len_i.write(packet_data.size());
+        for (int j = 0; j < packet_data.size(); ++j)
+        {
+            bus_memory_data_i[j]->write(packet_data[j]);
+        }
+        bus_memory_wr.write(true);
+        wait();
     }
-    bus_memory_wr.write(true);
 }
 
 void CD::memory_address_selection(const int len)

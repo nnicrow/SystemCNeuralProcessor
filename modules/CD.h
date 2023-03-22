@@ -19,7 +19,7 @@ public:
     sc_in<bool> bus_memory_is_busy;
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
-
+    
     void proccess();
 
     // Конструктор модуля
@@ -40,5 +40,5 @@ private:
     void end_write_to_memory(int len);
     void memory_address_selection(int len);
     void out_result(std::vector<float>& data);
-    void memory_write(std::vector<float>& packet_data, int i);
+    void memory_write(const std::vector<float>& data);
 };
