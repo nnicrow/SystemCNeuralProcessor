@@ -103,7 +103,7 @@ void CD::proccess()
                 weight_tasks[i][j].resize(layers_[layer_num]);
                 for (int k = 0; k < layers_[layer_num]; ++k)
                 {
-                    weight_tasks[i][j][k] = weight_data[j][k];
+                    weight_tasks[i][j][k] = weight_data[j + tasks[i] * i][k];
                 }
             }
 

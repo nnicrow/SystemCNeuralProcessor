@@ -7,4 +7,4 @@
 #define MEM_SIZE 40960
 #define CORE_COUNT 3
 #define QUEUE_SIZE (CORE_COUNT + 1)
-#define FILE_NAME "data/circle.txt"
+#define FILE_NAME "data/square.txt"
