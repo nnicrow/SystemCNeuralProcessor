@@ -179,13 +179,13 @@ void CD::end_write_to_memory(const int len)
 
 void CD::memory_write(const std::vector<float>& data)
 {
-    int num_packets = data.size() / BUFFER_SIZE;
+    int num_packets = data.size() / BUFFER_SIZE + 1;
     for (int i = 0; i < num_packets; ++i)
     {
         const int start_index = i * BUFFER_SIZE;
         const int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
         std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
-        bus_memory_start_addr_i.write(i * packet_data.size() + last_memory_busy_address_);
+        bus_memory_start_addr_i.write(start_index + last_memory_busy_address_);
         bus_memory_len_i.write(packet_data.size());
         for (int j = 0; j < packet_data.size(); ++j)
         {

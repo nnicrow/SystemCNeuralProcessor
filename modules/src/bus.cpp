@@ -74,9 +74,8 @@ void bus::memory_write(const queue& q)
     memory_rd.write(false);
     memory_start_addr_i.write(q.start_address_);
     memory_len_i.write(q.data_.size());
-    for (int i = 0; i < memory_len_i; ++i)
+    for (int i = 0; i < q.data_.size(); ++i)
     {
-        cout << "memory_write " << q.data_[i] << endl;
         memory_data_i[i].write(q.data_[i]);
     }
     memory_wr.write(true);
