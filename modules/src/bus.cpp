@@ -46,15 +46,7 @@ void bus::process()
         else if (bus_memory_rd.read())
         {
             bus_memory_is_busy.write(true);
-            memory_start_addr_i.write(bus_memory_start_addr_i->read());
-            memory_len_i.write(bus_memory_len_i[0]->read());
-            memory_rd.write(true);
-            wait(1);
-            for (int i = 0; i < memory_len_i.read(); ++i)
-            {
-                bus_memory_data_o->write(memory_data_o->read());    
-            }
-            memory_rd.write(false);
+            memory_read();
         }
         else
         {
@@ -70,7 +62,6 @@ void bus::process()
 
 void bus::memory_write(const queue& q)
 {
-    memory_rd.write(false);
     memory_start_addr_i.write(q.start_address_);
     memory_len_i.write(q.data_.size());
     for (int i = 0; i < q.data_.size(); ++i)
@@ -82,7 +73,23 @@ void bus::memory_write(const queue& q)
 
 void bus::memory_read()
 {
-    // TODO: 
+    while (bus_memory_rd.read())
+    {
+        int start_addr = bus_memory_start_addr_i[0].read();
+        int len = bus_memory_len_i[0].read();
+        
+        memory_start_addr_i.write(start_addr);
+        memory_len_i.write(len);
+        memory_rd.write(true);
+
+        wait(3);
+
+        for (int j = 0; j < len; ++j)
+        {
+            bus_memory_data_o[j].write(memory_data_o[j].read());    
+        }
+    }
+    memory_rd.write(false);
 }
 
 void bus::get_data_from_port(const int index)
@@ -96,4 +103,3 @@ void bus::get_data_from_port(const int index)
     queue q{data, bus_memory_start_addr_i[index].read()};
     write_queue_.emplace_back(q);
 }
-

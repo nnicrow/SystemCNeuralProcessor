@@ -190,19 +190,29 @@ std::vector<float> CD::memory_read(int start_address, int len)
 {
     std::vector<float> res_data;
     res_data.resize(len);
-    
     int num_packets = len / BUFFER_SIZE + 1;
     for (int i = 0; i < num_packets; ++i)
     {
-        const int start_index = i * BUFFER_SIZE;
-        const int end_index = std::min(start_index + BUFFER_SIZE, len);
-        bus_memory_start_addr_i.write(start_index);
-        bus_memory_len_i.write(end_index);
+        int start_index = i * BUFFER_SIZE;
+        int end_index = std::min(start_index + BUFFER_SIZE, len);
+        bus_memory_start_addr_i.write(start_address + start_index);
+        bus_memory_len_i.write(end_index - start_index);
         bus_memory_rd.write(true);
-        wait(2);
-        res_data[i] = bus_memory_data_o[i];
+
+        wait(3);
+        for (int j = 0; j < end_index - start_index; ++j)
+        {
+            res_data[i * BUFFER_SIZE + j] = bus_memory_data_o[j].read();
+        }
     }
     bus_memory_rd.write(false);
+
+    for (int i = 0; i < res_data.size(); ++i)
+    {
+        if (i % 7 == 0)
+            cout << endl;
+        cout << res_data[i];
+    }    
     return res_data;
 }
 

@@ -16,11 +16,6 @@ public:
     sc_out<float> memory_data_o[BUFFER_SIZE];
     sc_out<bool> memory_is_busy;
 
-    
-    /*std::vector<float>& read(int start_addr, int len) override;
-
-    void write(std::vector<float> &data, int start_address) override;
-    bool mem_is_busy() override;*/
     void proccess();
     
     SC_CTOR(memory)
