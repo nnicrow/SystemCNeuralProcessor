@@ -115,3 +115,4 @@ void bus::get_data_from_port(const int index)
     queue q{data, bus_memory_start_addr_i[index].read()};
     write_queue_.emplace_back(q);
 }
+

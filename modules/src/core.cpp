@@ -14,7 +14,15 @@ void core::control_process()
         {
             result_ = softmax(neurons_data_);
             
-            bus_inst->write(result_, start_address_);
+            int num_packets = result_.size() / 16;
+            for (int i = 0; i < num_packets; ++i)
+            {
+                int start_index = i * BUFFER_SIZE;
+                int end_index = std::min(start_index + BUFFER_SIZE, (int)result_.size());
+                std::vector<float> packet_data(result_.begin() + start_index, result_.begin() + end_index);
+                memory_write(packet_data, i, start_index);
+                wait();
+            }
             is_busy_flag_ = false;
             return;
         }
@@ -30,21 +38,28 @@ void core::control_process()
             result_[task_num] = activ_f(res);
         }
 
-        bus_inst->write(result_, start_address_);
+        int num_packets = result_.size() / 16;
+        for (int i = 0; i < num_packets; ++i)
+        {
+            int start_index = i * BUFFER_SIZE;
+            int end_index = std::min(start_index + BUFFER_SIZE, (int)result_.size());
+            std::vector<float> packet_data(result_.begin() + start_index, result_.begin() + end_index);
+            memory_write(packet_data, i, start_index);
+            wait();
+        }
         is_busy_flag_ = false;
         wait();
     }
 }
 
-void core::memory_write(std::vector<float>& data, int i)
+void core::memory_write(std::vector<float>& packet_data, int i, int start_index)
 {
-    // разбить на пачки по 16 элементов
-    /*bus_memory_start_addr_i;
-    bus_memory_len_i;
-    for (int i = 0; i < ; ++i)
+    bus_memory_start_addr_i.write(i * packet_data.size() + start_index);
+    bus_memory_len_i.write(packet_data.size());
+    for (int k = 0; k < packet_data.size(); ++k)
     {
-        bus_memory_data_i->write();
-    }*/
+        bus_memory_data_i->write(packet_data[k]);
+    }
 }
 
 bool core::is_busy(int core_num)

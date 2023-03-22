@@ -6,7 +6,7 @@
 void CD::proccess()
 {
     // read data from file
-    /*cout << "Start read data" << endl;
+    cout << "Start read data" << endl;
 
     // read and push weight to memory
     ifstream fin("data/weight.txt");
@@ -23,11 +23,19 @@ void CD::proccess()
                 fin >> data[i];
             }
             write_to_memory(data, len);
-            wait();
+            int num_packets = data.size() / 16;
+            for (int i = 0; i < num_packets; ++i)
+            {
+                int start_index = i * BUFFER_SIZE;
+                int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
+                std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
+                memory_write(packet_data, i, start_index);
+                wait();
+            }
         }
         break;
     }
-    while (bus_memory_inst->mem_is_busy())
+    while (bus_memory_is_busy.read())
     {
         wait();
     }
@@ -44,10 +52,18 @@ void CD::proccess()
             fin2 >> data[i];
         }
         write_to_memory(data, len);
-        wait();
+        int num_packets = data.size() / 16;
+        for (int i = 0; i < num_packets; ++i)
+        {
+            int start_index = i * BUFFER_SIZE;
+            int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
+            std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
+            memory_write(packet_data, i, start_index);
+            wait();
+        }
         break;
     }
-    while (bus_memory_inst->mem_is_busy())
+    while (bus_memory_is_busy.read())
     {
         wait();
     }
@@ -55,7 +71,7 @@ void CD::proccess()
 
 
     // расчёты
-    for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
+    /*for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
     {
         // запрос данных слоев
         std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
@@ -163,10 +179,9 @@ void CD::proccess()
 
 void CD::write_to_memory(std::vector<float>& data, const int len)
 {
-    /*address_.resize(address_.size() + 1);
+    address_.resize(address_.size() + 1);
     address_[address_count_++] = last_memory_busy_address_;
-    bus_memory_inst->write(data, last_memory_busy_address_);
-    last_memory_busy_address_ += len;*/
+    last_memory_busy_address_ += len;
 }
 
 void CD::memory_address_selection(const int len)
@@ -203,4 +218,14 @@ void CD::out_result(std::vector<float>& data)
 
     cout << endl;
     cout << "Result is " << ToString(e) << endl;
+}
+
+void CD::memory_write(std::vector<float>& packet_data, int i, int start_index)
+{
+    bus_memory_start_addr_i.write(i * packet_data.size() + start_index);
+    bus_memory_len_i.write(packet_data.size());
+    for (float& k : packet_data)
+    {
+        bus_memory_data_i->write(k);
+    }
 }
