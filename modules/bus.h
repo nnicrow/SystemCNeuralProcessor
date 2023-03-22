@@ -62,4 +62,5 @@ private:
     std::vector<float> read_data;
     void memory_write(const queue& queue);
     void memory_read();
+    void get_data_from_port(int index);
 };

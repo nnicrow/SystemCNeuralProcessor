@@ -49,34 +49,69 @@ void bus::process()
 {
     while (true)
     {
-        // потребляем всё что передали на входы
-        
+        // потребляем данные со всех портов и закидываем их в очередь на запись
+        for (int i = 0; i < CORE_COUNT + 1; ++i)
+        {
+            if (bus_memory_wr[i].read())
+            {
+                get_data_from_port(i);
+            }
+        }
+
         // если есть что писать, то пишем в память
         if (!write_queue_.empty())
         {
+            bus_memory_is_busy.write(true);
             memory_wr.write(true);
             queue q = write_queue_.front();
             write_queue_.erase(write_queue_.begin());
             memory_write(q);
             memory_wr.write(false);
         }
+        else if (bus_memory_rd.read())
+        {
+            bus_memory_is_busy.write(true);
+            memory_start_addr_i.write(bus_memory_start_addr_i->read());
+            memory_len_i.write(bus_memory_len_i[0]->read());
+            memory_rd.write(true);
+            wait();
+            
+            for (int i = 0; i < memory_len_i.read(); ++i)
+            {
+                bus_memory_data_o->write(memory_data_o->read());    
+            }
+        }
+        else
+            bus_memory_is_busy.write(memory_is_busy.read());
 
         // если есть что писать, то пишем
         wait();
     }
 }
 
-void bus::memory_write(const queue& queue)
+void bus::memory_write(const queue& q)
 {
-    memory_start_addr_i.write(queue.start_address_);
-    memory_len_i.write(queue.data_.size());
+    memory_start_addr_i.write(q.start_address_);
+    memory_len_i.write(q.data_.size());
     for (int i = 0; i < memory_len_i; ++i)
     {
-        memory_data_i[i].write(queue.data_[i]);
+        memory_data_i[i].write(q.data_[i]);
     }
 }
 
 void bus::memory_read()
 {
     // TODO: 
+}
+
+void bus::get_data_from_port(const int index)
+{
+    std::vector<float> data;
+    data.resize(bus_memory_len_i[index].read());
+    for (int i = 0; i < bus_memory_len_i[index].read(); ++i)
+    {
+        data[i] = bus_memory_data_i[index][i].read();
+    }
+    queue q{data, bus_memory_start_addr_i[index].read()};
+    write_queue_.emplace_back(q);
 }

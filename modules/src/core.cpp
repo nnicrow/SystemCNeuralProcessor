@@ -13,6 +13,7 @@ void core::control_process()
         if (is_last_flag_)
         {
             result_ = softmax(neurons_data_);
+            
             bus_inst->write(result_, start_address_);
             is_busy_flag_ = false;
             return;
