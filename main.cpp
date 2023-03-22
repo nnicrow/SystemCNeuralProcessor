@@ -34,6 +34,9 @@ int sc_main(int argc, char* argv[])
     sc_signal<bool> memory_wr;
     sc_signal<bool> memory_rd;
 
+    // core
+    sc_signal<bool> core_is_busy[CORE_COUNT];
+    
     // memory
     memory.clk(clk);
     memory.memory_start_addr_i(memory_start_addr_i);
@@ -99,6 +102,8 @@ int sc_main(int argc, char* argv[])
         }
         bus.bus_memory_wr[i + 1](bus_memory_wr[i + 1]);
         bus.core_inst(cores[i]);
+        cores[i].core_is_busy(core_is_busy[i]);
+        CD.core_is_busy[i](core_is_busy[i]);
     }
 
     sc_start(sc_time(20000, SC_NS));

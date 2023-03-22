@@ -9,6 +9,9 @@ class core : public sc_module, public ICore
 public:
     sc_in<bool> clk; // тактовый сигнал
 
+    // core
+    sc_out<bool> core_is_busy;
+    
     // memory
     sc_out<int> bus_memory_start_addr_i;
     sc_out<int> bus_memory_len_i;

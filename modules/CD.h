@@ -9,6 +9,7 @@ public:
     // global
     sc_in<bool> clk; // Тактовый сигнал
 
+    // bus
     sc_out<int> bus_memory_start_addr_i;
     sc_out<int> bus_memory_len_i;
     sc_out<float> bus_memory_data_i[BUFFER_SIZE];
@@ -17,7 +18,9 @@ public:
 
     sc_in<float> bus_memory_data_o[BUFFER_SIZE];
     sc_in<bool> bus_memory_is_busy;
-    
+
+    // cores
+    sc_in<bool> core_is_busy[CORE_COUNT];
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
     
     void proccess();
