@@ -22,7 +22,7 @@ void CD::proccess()
                 fin >> data[i];
             }
 
-            int num_packets = data.size() / 16;
+            int num_packets = data.size() / BUFFER_SIZE;
             for (int i = 0; i < num_packets; ++i)
             {
                 int start_index = i * BUFFER_SIZE;
@@ -51,8 +51,7 @@ void CD::proccess()
         {
             fin2 >> data[i];
         }
-
-        int num_packets = data.size() / 16;
+        int num_packets = data.size() / BUFFER_SIZE;
         for (int i = 0; i < num_packets; ++i)
         {
             int start_index = i * BUFFER_SIZE;
@@ -69,10 +68,10 @@ void CD::proccess()
         wait();
     }
     cout << "End read data" << endl;
-    bus_memory_rd.write(true);
+    /*bus_memory_rd.write(true);
 
     // расчёты
-    /*for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
+    for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
     {
         // запрос данных слоев
         std::vector<float> neurons = bus_memory_inst->read(address_[layer_num + layer_count_ - 1], layers_[layer_num]);
@@ -190,9 +189,10 @@ void CD::memory_write(std::vector<float>& packet_data, int i)
 {
     bus_memory_start_addr_i.write(i * packet_data.size() + last_memory_busy_address_);
     bus_memory_len_i.write(packet_data.size());
-    for (int i = 0; i < packet_data.size(); ++i)
+    for (int j = 0; j < packet_data.size(); ++j)
     {
-        bus_memory_data_i[i]->write(packet_data[i]);
+        cout << packet_data[j] << endl;
+        bus_memory_data_i[j]->write(packet_data[j]);
     }
     bus_memory_wr.write(true);
 }

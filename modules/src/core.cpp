@@ -14,7 +14,7 @@ void core::control_process()
         {
             result_ = softmax(neurons_data_);
             
-            int num_packets = result_.size() / 16;
+            int num_packets = result_.size() / BUFFER_SIZE;
             for (int i = 0; i < num_packets; ++i)
             {
                 int start_index = i * BUFFER_SIZE;
@@ -38,7 +38,7 @@ void core::control_process()
             result_[task_num] = activ_f(res);
         }
 
-        int num_packets = result_.size() / 16;
+        int num_packets = result_.size() / BUFFER_SIZE;
         for (int i = 0; i < num_packets; ++i)
         {
             int start_index = i * BUFFER_SIZE;
