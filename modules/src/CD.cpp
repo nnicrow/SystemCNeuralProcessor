@@ -5,8 +5,8 @@
 
 void CD::proccess()
 {
-    /*// read data from file
-    cout << "Start read data" << endl;
+    // read data from file
+    /*cout << "Start read data" << endl;
 
     // read and push weight to memory
     ifstream fin("data/weight.txt");

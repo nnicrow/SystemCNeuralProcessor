@@ -39,4 +39,5 @@ private:
 
     float activ_f(float data);
     std::vector<float> softmax(std::vector<float> t);
+    void memory_write(std::vector<float>& data, int i);
 };

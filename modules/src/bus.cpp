@@ -49,7 +49,9 @@ void bus::process()
 {
     while (true)
     {
-        // если есть элементы на запись
+        // потребляем всё что передали на входы
+        
+        // если есть что писать, то пишем в память
         if (!write_queue_.empty())
         {
             memory_wr.write(true);
@@ -58,6 +60,8 @@ void bus::process()
             memory_write(q);
             memory_wr.write(false);
         }
+
+        // если есть что писать, то пишем
         wait();
     }
 }

@@ -2,7 +2,7 @@
 
 void core::control_process()
 {
-    /*while (true)
+    while (true)
     {
         while (!is_busy_flag_)
         {
@@ -32,6 +32,17 @@ void core::control_process()
         bus_inst->write(result_, start_address_);
         is_busy_flag_ = false;
         wait();
+    }
+}
+
+void core::memory_write(std::vector<float>& data, int i)
+{
+    // разбить на пачки по 16 элементов
+    /*bus_memory_start_addr_i;
+    bus_memory_len_i;
+    for (int i = 0; i < ; ++i)
+    {
+        bus_memory_data_i->write();
     }*/
 }
 
