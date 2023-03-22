@@ -82,12 +82,13 @@ void bus::memory_read()
         memory_len_i.write(len);
         memory_rd.write(true);
 
-        wait(3);
+        wait(2);
 
         for (int j = 0; j < len; ++j)
         {
             bus_memory_data_o[j].write(memory_data_o[j].read());    
         }
+        wait(3);
     }
     memory_rd.write(false);
 }

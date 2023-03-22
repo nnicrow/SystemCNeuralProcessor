@@ -199,20 +199,14 @@ std::vector<float> CD::memory_read(int start_address, int len)
         bus_memory_len_i.write(end_index - start_index);
         bus_memory_rd.write(true);
 
-        wait(3);
+        wait(4);
         for (int j = 0; j < end_index - start_index; ++j)
         {
             res_data[i * BUFFER_SIZE + j] = bus_memory_data_o[j].read();
         }
+        wait();
     }
     bus_memory_rd.write(false);
-
-    for (int i = 0; i < res_data.size(); ++i)
-    {
-        if (i % 7 == 0)
-            cout << endl;
-        cout << res_data[i];
-    }    
     return res_data;
 }
 

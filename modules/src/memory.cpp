@@ -7,7 +7,7 @@ void memory::read()
     {
         memory_data_o[i].write(memory_data_[memory_start_addr_i.read() + i]);
     }
-    wait(3);
+    wait(4);
 }
 
 void memory::write()
