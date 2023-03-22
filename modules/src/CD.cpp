@@ -121,7 +121,7 @@ void CD::proccess()
                     break;
                 wait();
             }
-            last_memory_busy_address_ += tasks[i]; 
+            last_memory_busy_address_ += tasks[i];
         }
         for (int i = 0; i < CORE_COUNT; ++i)
         {

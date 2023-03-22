@@ -46,9 +46,9 @@ void bus::bus_write_process()
             wait();
             continue;
         }
-
-        queue q = write_queue_.back();
-        write_queue_.pop_back();
+        
+        queue q = write_queue_.front();
+        write_queue_.erase(write_queue_.begin());
         memory_inst->write(q.data_, q.start_address_);
         wait();
     }
