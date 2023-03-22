@@ -11,29 +11,6 @@ queue::queue(const std::vector<float>& data, int start_address)
     start_address_ = start_address;
 }
 
-/*std::vector<float>& bus::read(int start_addr, int len)
-{
-    // TODO: 
-    /*return memory_inst->read(start_addr, len);#1#
-    return read_data;
-}
-
-void bus::write(std::vector<float>& data, int start_address)
-{
-    for (int i = 0; i < BUFFER_SIZE;++i)
-    {
-        queue q{data, start_address}; 
-        write_queue_.emplace_back(q);    
-    }
-    
-}
-
-bool bus::mem_is_busy()
-{
-    /*return memory_inst->mem_is_busy() && !write_queue_.empty();#1#
-    return memory_is_busy.read() && !write_queue_.empty();
-}*/
-
 bool bus::is_busy(int core_num)
 {
     return core_inst[core_num]->is_busy(core_num);
@@ -49,6 +26,8 @@ void bus::process()
 {
     while (true)
     {
+        
+        
         // потребляем данные со всех портов и закидываем их в очередь на запись
         for (int i = 0; i < CORE_COUNT + 1; ++i)
         {
@@ -61,15 +40,16 @@ void bus::process()
         // если есть что писать, то пишем в память
         if (!write_queue_.empty())
         {
+            memory_rd.write(false);
             bus_memory_is_busy.write(true);
             memory_wr.write(true);
             queue q = write_queue_.front();
             write_queue_.erase(write_queue_.begin());
             memory_write(q);
-            memory_wr.write(false);
         }
         else if (bus_memory_rd.read())
         {
+            memory_wr.write(false);
             bus_memory_is_busy.write(true);
             memory_start_addr_i.write(bus_memory_start_addr_i->read());
             memory_len_i.write(bus_memory_len_i[0]->read());
@@ -82,7 +62,11 @@ void bus::process()
             }
         }
         else
+        {
+            memory_rd.write(false);
+            memory_wr.write(false);
             bus_memory_is_busy.write(memory_is_busy.read());
+        }
 
         // если есть что писать, то пишем
         wait();

@@ -37,7 +37,7 @@ private:
     const int layer_count_ = LAYER_COUNT; // колличество слоев
     const std::vector<int> layers_ = LAYER_S;
     
-    void write_to_memory(std::vector<float>& data, int len);
+    void end_write_to_memory(int len);
     void memory_address_selection(int len);
     void out_result(std::vector<float>& data);
     void memory_write(std::vector<float>& packet_data, int i, int start_index);
