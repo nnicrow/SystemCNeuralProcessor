@@ -14,6 +14,7 @@ void memory::write()
     
     for (int i = 0; i < memory_len_i.read(); ++i)
     {
+        cout << memory_data_i[i].read() << endl;
         memory_data_[memory_start_addr_i.read() + i] = memory_data_i[i].read();
     }
 }

@@ -26,8 +26,6 @@ void bus::process()
 {
     while (true)
     {
-        
-        
         // потребляем данные со всех портов и закидываем их в очередь на запись
         for (int i = 0; i < CORE_COUNT + 1; ++i)
         {
@@ -40,9 +38,7 @@ void bus::process()
         // если есть что писать, то пишем в память
         if (!write_queue_.empty())
         {
-            memory_rd.write(false);
             bus_memory_is_busy.write(true);
-            memory_wr.write(true);
             queue q = write_queue_.front();
             write_queue_.erase(write_queue_.begin());
             memory_write(q);
@@ -53,7 +49,7 @@ void bus::process()
             bus_memory_is_busy.write(true);
             memory_start_addr_i.write(bus_memory_start_addr_i->read());
             memory_len_i.write(bus_memory_len_i[0]->read());
-            memory_rd.write(true);
+            memory_rd.write(false);
             wait();
             
             for (int i = 0; i < memory_len_i.read(); ++i)
@@ -63,9 +59,9 @@ void bus::process()
         }
         else
         {
+            bus_memory_is_busy.write(memory_is_busy.read());
             memory_rd.write(false);
             memory_wr.write(false);
-            bus_memory_is_busy.write(memory_is_busy.read());
         }
 
         // если есть что писать, то пишем
@@ -75,12 +71,15 @@ void bus::process()
 
 void bus::memory_write(const queue& q)
 {
+    memory_rd.write(false);
     memory_start_addr_i.write(q.start_address_);
     memory_len_i.write(q.data_.size());
     for (int i = 0; i < memory_len_i; ++i)
     {
+        // cout << "memory_write " << q.data_[i] << endl; 
         memory_data_i[i].write(q.data_[i]);
     }
+    memory_wr.write(true);
 }
 
 void bus::memory_read()

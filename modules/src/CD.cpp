@@ -21,18 +21,17 @@ void CD::proccess()
             {
                 fin >> data[i];
             }
-            
+
             int num_packets = data.size() / 16;
             for (int i = 0; i < num_packets; ++i)
             {
                 int start_index = i * BUFFER_SIZE;
                 int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
                 std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
-                memory_write(packet_data, i, start_index);
+                memory_write(packet_data, i);
                 wait();
             }
             end_write_to_memory(len);
-            
         }
         break;
     }
@@ -52,14 +51,14 @@ void CD::proccess()
         {
             fin2 >> data[i];
         }
-        
+
         int num_packets = data.size() / 16;
         for (int i = 0; i < num_packets; ++i)
         {
             int start_index = i * BUFFER_SIZE;
             int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
             std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
-            memory_write(packet_data, i, start_index);
+            memory_write(packet_data, i);
             wait();
         }
         end_write_to_memory(len);
@@ -71,7 +70,7 @@ void CD::proccess()
     }
     cout << "End read data" << endl;
     bus_memory_rd.write(true);
-        
+
     // расчёты
     /*for (int layer_num = 0; layer_num < layer_count_ - 1; ++layer_num)
     {
@@ -187,9 +186,9 @@ void CD::end_write_to_memory(const int len)
     bus_memory_wr.write(false);
 }
 
-void CD::memory_write(std::vector<float>& packet_data, int i, int start_index)
+void CD::memory_write(std::vector<float>& packet_data, int i)
 {
-    bus_memory_start_addr_i.write(i * packet_data.size() + start_index + last_memory_busy_address_);
+    bus_memory_start_addr_i.write(i * packet_data.size() + last_memory_busy_address_);
     bus_memory_len_i.write(packet_data.size());
     for (int i = 0; i < packet_data.size(); ++i)
     {
