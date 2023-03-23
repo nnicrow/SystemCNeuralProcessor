@@ -8,8 +8,11 @@ void core::control_process()
         {
             wait();
         }
-        core_is_busy.write(is_busy_flag_);
         wait();
+        core_is_busy.write(is_busy_flag_);
+        is_last_flag_ = core_is_last.read();
+        if (core_is_last.read())
+            cout << "last core count" << endl;
         cout << "core " << core_num_ << " start count" << endl;
 
         if (is_last_flag_)
@@ -61,7 +64,7 @@ void core::memory_write(const std::vector<float>& data)
 }
 
 bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
-                     int start_address, bool is_last)
+                     int start_address)
 {
     if (is_busy_flag_)
     {
@@ -72,7 +75,6 @@ bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std:
     neurons_data_ = neurons;
     weight_data_ = weight;
     start_address_ = start_address;
-    is_last_flag_ = is_last;
     core_num_ = core_num;
     result_.resize(weight_data_.size());
     return true;

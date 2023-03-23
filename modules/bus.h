@@ -41,22 +41,20 @@ public:
     sc_out<bool> bus_memory_is_busy;
 
     // core
-    sc_out<bool> bus_core_is_busy[CORE_COUNT];
+    /*sc_out<bool> bus_core_is_busy[CORE_COUNT];
     sc_in<bool> core_is_busy[CORE_COUNT];
+    sc_out<bool> core_is_last[CORE_COUNT];
+    sc_in<bool> bus_core_is_last[CORE_COUNT];*/
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
-
-    /*std::vector<float>& read(int start_addr, int len) override;
-    void write(std::vector<float>& data, int start_address) override;
-    bool mem_is_busy() override;*/
     
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last = false) override;;
+    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address) override;;
     
     void bus_process();
 
     SC_CTOR(bus)
     {
-        sc_bind_proxy bus_core_is_busy = *core_is_busy;
+        /*sc_bind_proxy bus_core_is_busy = *core_is_busy;*/
         SC_THREAD(bus_process)
         sensitive << clk.pos();
     }

@@ -37,6 +37,8 @@ int sc_main(int argc, char* argv[])
     // core
     sc_signal<bool> bus_core_is_busy[CORE_COUNT];
     sc_signal<bool> core_is_busy[CORE_COUNT];
+    sc_signal<bool> bus_core_is_last[CORE_COUNT];
+    sc_signal<bool> core_is_last[CORE_COUNT];
     
     // memory
     memory.clk(clk);
@@ -95,9 +97,14 @@ int sc_main(int argc, char* argv[])
         cores[i].bus_memory_wr(bus_memory_wr[i + 1]);
         
         cores[i].core_is_busy(core_is_busy[i]);
-        bus.core_is_busy[i](core_is_busy[i]);
-        CD.cors_is_busy[i](bus_core_is_busy[i]);
-        bus.bus_core_is_busy[i](bus_core_is_busy[i]);
+        //bus.core_is_busy[i](core_is_busy[i]);
+        CD.cors_is_busy[i](core_is_busy[i]);
+        //bus.bus_core_is_busy[i](bus_core_is_busy[i]);
+        
+        cores[i].core_is_last(core_is_last[i]);
+        //bus.core_is_last[i](core_is_last[i]);
+        CD.bus_core_is_last[i](core_is_last[i]);
+        //bus.bus_core_is_last[i](bus_core_is_last[i]);
         
         bus.bus_memory_start_addr_i[i + 1](bus_memory_start_addr_i[i + 1]);
         bus.bus_memory_len_i[i + 1](bus_memory_len_i[i + 1]);

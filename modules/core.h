@@ -8,7 +8,9 @@ class core : public sc_module, public ICore
 {
 public:
     sc_in<bool> clk; // тактовый сигнал
+
     sc_out<bool> core_is_busy;
+    sc_in<bool> core_is_last;
     
     // memory
     sc_out<int> bus_memory_start_addr_i;
@@ -20,7 +22,7 @@ public:
     void control_process();
     
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
-                   int start_address, bool is_last = false) override;
+                   int start_address) override;
 
     SC_CTOR(core)
     {

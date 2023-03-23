@@ -142,15 +142,14 @@ void CD::proccess()
     std::vector<float> neurons = memory_read(address_.back(), layers_[layer_count_ - 1]);
     
     std::vector<std::vector<float>> weight_task;
-    while (true)
+    while (cors_is_busy->read())
     {
-        // елси ложь, то ядро не может принять задачу.
-        if (bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_, true))
-            break;
         wait();
-        memory_address_selection(layers_[layer_count_ - 1]);
-        last_memory_busy_address_ += layers_[layer_count_ - 1];
     }
+    bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_);
+    memory_address_selection(layers_[layer_count_ - 1]);
+    last_memory_busy_address_ += layers_[layer_count_ - 1];
+    bus_core_is_last->write(true);
     wait();
     std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
     for (const float i : result)
