@@ -151,7 +151,21 @@ void CD::proccess()
     last_memory_busy_address_ += layers_[layer_count_ - 1];
     core_is_start_address[0].write(last_memory_busy_address_);
     bus_core_is_last[0].write(true);
-    core_write(neurons, 0);
+    int num_packets = neurons.size() / BUFFER_SIZE + 1;
+    for (int i = 0; i < num_packets; ++i)
+    {
+        const int start_index = i * BUFFER_SIZE;
+        const int end_index = std::min(start_index + BUFFER_SIZE, (int)neurons.size());
+        std::vector<float> packet_data(neurons.begin() + start_index, neurons.begin() + end_index);
+        core_len_i[0].write(packet_data.size());
+        for (int j = 0; j < packet_data.size(); ++j)
+        {
+            core_data_i[0][j]->write(packet_data[j]);
+        }
+        core_wr[0].write(true);
+        wait();
+    }
+    core_wr[0].write(false);
 
     wait();
     std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
