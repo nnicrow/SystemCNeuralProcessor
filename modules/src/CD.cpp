@@ -115,16 +115,15 @@ void CD::proccess()
         // распределяем задачи
         for (int i = 0; i < CORE_COUNT; ++i)
         {
-            while (true)
+            while (cors_is_busy[i].read())
             {
-                // елси ложь, то ядро не может принять задачу.
-                if (bus_cores_inst->core_task(i, neurons, weight_tasks[i], last_memory_busy_address_))
-                    break;
                 wait();
             }
+            bus_cores_inst->core_task(i, neurons, weight_tasks[i]);
+            core_is_start_address[i].write(last_memory_busy_address_);
             last_memory_busy_address_ += tasks[i];
         }
-        wait(2);
+        wait();
         for (int i = 0; i < CORE_COUNT; ++i)
         {
             while (cors_is_busy[i].read())
@@ -142,14 +141,15 @@ void CD::proccess()
     std::vector<float> neurons = memory_read(address_.back(), layers_[layer_count_ - 1]);
     
     std::vector<std::vector<float>> weight_task;
-    while (cors_is_busy->read())
+    while (cors_is_busy[0].read())
     {
         wait();
     }
-    bus_cores_inst->core_task(0, neurons, weight_task, last_memory_busy_address_);
+    bus_cores_inst->core_task(0, neurons, weight_task);
     memory_address_selection(layers_[layer_count_ - 1]);
     last_memory_busy_address_ += layers_[layer_count_ - 1];
-    bus_core_is_last->write(true);
+    core_is_start_address[0].write(last_memory_busy_address_);
+    bus_core_is_last[0].write(true);
     wait();
     std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
     for (const float i : result)

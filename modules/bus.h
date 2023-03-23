@@ -48,7 +48,7 @@ public:
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
     
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address) override;;
+    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight) override;;
     
     void bus_process();
 

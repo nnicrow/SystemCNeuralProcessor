@@ -11,6 +11,7 @@ public:
 
     sc_out<bool> core_is_busy;
     sc_in<bool> core_is_last;
+    sc_in<int> core_is_start_address;
     
     // memory
     sc_out<int> bus_memory_start_addr_i;
@@ -21,8 +22,7 @@ public:
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
     
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
-                   int start_address) override;
+    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight) override;
 
     SC_CTOR(core)
     {

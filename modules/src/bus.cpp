@@ -11,10 +11,9 @@ queue::queue(const std::vector<float>& data, int start_address)
     start_address_ = start_address;
 }
 
-bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight,
-                    int start_address)
+bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight)
 {
-    return core_inst[core_num]->core_task(core_num, neurons, weight, start_address);
+    return core_inst[core_num]->core_task(core_num, neurons, weight);
 }
 
 void bus::bus_process()
