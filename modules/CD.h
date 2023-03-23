@@ -24,7 +24,6 @@ public:
     sc_out<int> core_is_start_address[CORE_COUNT];
 
     // core data
-    sc_out<int> core_start_addr_i[CORE_COUNT];
     sc_out<int> core_len_i[CORE_COUNT];
     sc_out<float> core_data_i[CORE_COUNT][BUFFER_SIZE];
     sc_out<bool> core_wr[CORE_COUNT];
@@ -52,5 +51,6 @@ private:
     void memory_address_selection(int len);
     void out_result(std::vector<float>& data);
     void memory_write(const std::vector<float>& data);
+    void core_write(const std::vector<float>& data, int core);
     std::vector<float> memory_read(int start_address, int len);
 };

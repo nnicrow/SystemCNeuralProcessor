@@ -119,8 +119,9 @@ void CD::proccess()
             {
                 wait();
             }
-            bus_cores_inst->core_task(i, neurons, weight_tasks[i]);
+            bus_cores_inst->core_task(i, weight_tasks[i]);
             core_is_start_address[i].write(last_memory_busy_address_);
+            core_write(neurons, i);
             last_memory_busy_address_ += tasks[i];
         }
         wait();
@@ -145,11 +146,12 @@ void CD::proccess()
     {
         wait();
     }
-    bus_cores_inst->core_task(0, neurons, weight_task);
+    bus_cores_inst->core_task(0, weight_task);
     memory_address_selection(layers_[layer_count_ - 1]);
     last_memory_busy_address_ += layers_[layer_count_ - 1];
     core_is_start_address[0].write(last_memory_busy_address_);
     bus_core_is_last[0].write(true);
+    core_write(neurons, 0);
 
     wait();
     std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
@@ -185,6 +187,25 @@ void CD::memory_write(const std::vector<float>& data)
         bus_memory_wr.write(true);
         wait();
     }
+}
+
+void CD::core_write(const std::vector<float>& data, int core)
+{
+    int num_packets = data.size() / BUFFER_SIZE + 1;
+    for (int i = 0; i < num_packets; ++i)
+    {
+        const int start_index = i * BUFFER_SIZE;
+        const int end_index = std::min(start_index + BUFFER_SIZE, (int)data.size());
+        std::vector<float> packet_data(data.begin() + start_index, data.begin() + end_index);
+        core_len_i[core].write(packet_data.size());
+        for (int j = 0; j < packet_data.size(); ++j)
+        {
+            core_data_i[core][j]->write(packet_data[j]);
+        }
+        core_wr[core].write(true);
+        wait();
+    }
+    core_wr[core].write(false);
 }
 
 std::vector<float> CD::memory_read(int start_address, int len)

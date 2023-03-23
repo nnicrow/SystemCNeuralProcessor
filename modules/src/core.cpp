@@ -12,6 +12,7 @@ void core::control_process()
         core_is_busy.write(is_busy_flag_);
         is_last_flag_ = core_is_last.read();
         start_address_ = core_is_start_address.read();
+        neurons_data_ = core_read();
         if (core_is_last.read())
             cout << "last core count" << endl;
         cout << "core " << core_num_ << " start count" << endl;
@@ -25,7 +26,7 @@ void core::control_process()
             wait();
             return;
         }
-    
+
         // цикл по задачам
         for (int task_num = 0; task_num < weight_data_.size(); ++task_num)
         {
@@ -42,6 +43,25 @@ void core::control_process()
         core_is_busy.write(is_busy_flag_);
         wait();
     }
+}
+
+std::vector<float> core::core_read()
+{
+    int size = 0;
+    int elements = 0;
+    std::vector<float> data;
+    while (core_wr.read())
+    {
+        size += core_len_i.read();
+        data.resize(size);
+        for (int i = 0; i < core_len_i.read(); ++i)
+        {
+            data[elements + i] = core_data_i[i].read();
+        }
+        elements = size;
+        wait();
+    }
+    return data;
 }
 
 void core::memory_write(const std::vector<float>& data)
@@ -64,15 +84,13 @@ void core::memory_write(const std::vector<float>& data)
     bus_memory_wr.write(false);
 }
 
-bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight)
+bool core::core_task(int core_num, std::vector<std::vector<float>>& weight)
 {
     if (is_busy_flag_)
     {
         return false;
     }
     is_busy_flag_ = true;
-    
-    neurons_data_ = neurons;
     weight_data_ = weight;
     core_num_ = core_num;
     result_.resize(weight_data_.size());
@@ -89,13 +107,14 @@ std::vector<float> core::softmax(std::vector<float> t)
     std::vector<float> out;
     out.resize(t.size());
     double sum = 0;
-    for (int i = 0; i < t.size(); ++i) {
+    for (int i = 0; i < t.size(); ++i)
+    {
         out[i] = std::exp(t[i]);
         sum += out[i];
     }
-    for (int i = 0; i < t.size(); ++i) {
+    for (int i = 0; i < t.size(); ++i)
+    {
         out[i] /= sum;
-
     }
     return out;
 }

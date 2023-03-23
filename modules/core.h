@@ -14,7 +14,6 @@ public:
     sc_in<int> core_is_start_address;
 
     // core data
-    sc_in<int> core_start_addr_i;
     sc_in<int> core_len_i;
     sc_in<float> core_data_i[BUFFER_SIZE];
     sc_in<bool> core_wr;
@@ -27,8 +26,8 @@ public:
     
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
-    
-    bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight) override;
+
+    bool core_task(int core_num, std::vector<std::vector<float>>& weight) override;
 
     SC_CTOR(core)
     {
@@ -48,4 +47,5 @@ private:
     float activ_f(float data);
     std::vector<float> softmax(std::vector<float> t);
     void memory_write(const std::vector<float>& data);
+    std::vector<float> core_read();
 };

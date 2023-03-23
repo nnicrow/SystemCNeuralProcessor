@@ -40,7 +40,7 @@ int sc_main(int argc, char* argv[])
     // sc_signal<bool> bus_core_is_last[CORE_COUNT];
     sc_signal<bool> core_is_last[CORE_COUNT];
     sc_signal<int> core_is_start_address[CORE_COUNT];
-    sc_signal<int> core_start_addr_i[CORE_COUNT];
+    // core data
     sc_signal<int> core_len_i[CORE_COUNT];
     sc_signal<float> core_data_i[CORE_COUNT][BUFFER_SIZE];
     sc_signal<bool> core_wr[CORE_COUNT];
@@ -107,11 +107,9 @@ int sc_main(int argc, char* argv[])
         CD.bus_core_is_last[i](core_is_last[i]);
         cores[i].core_is_start_address(core_is_start_address[i]);
         CD.core_is_start_address[i](core_is_start_address[i]);
-
-        cores[i].core_start_addr_i(core_start_addr_i[i]);
+        
         cores[i].core_len_i(core_len_i[i]);
         cores[i].core_wr(core_wr[i]);
-        CD.core_start_addr_i[i](core_start_addr_i[i]);
         CD.core_len_i[i](core_len_i[i]);
         CD.core_wr[i](core_wr[i]);
         
