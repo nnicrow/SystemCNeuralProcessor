@@ -40,6 +40,10 @@ int sc_main(int argc, char* argv[])
     // sc_signal<bool> bus_core_is_last[CORE_COUNT];
     sc_signal<bool> core_is_last[CORE_COUNT];
     sc_signal<int> core_is_start_address[CORE_COUNT];
+    sc_signal<int> core_start_addr_i[CORE_COUNT];
+    sc_signal<int> core_len_i[CORE_COUNT];
+    sc_signal<float> core_data_i[CORE_COUNT][BUFFER_SIZE];
+    sc_signal<bool> core_wr[CORE_COUNT];
     
     // memory
     memory.clk(clk);
@@ -98,24 +102,27 @@ int sc_main(int argc, char* argv[])
         cores[i].bus_memory_wr(bus_memory_wr[i + 1]);
         
         cores[i].core_is_busy(core_is_busy[i]);
-        //bus.core_is_busy[i](core_is_busy[i]);
         CD.cors_is_busy[i](core_is_busy[i]);
-        //bus.bus_core_is_busy[i](bus_core_is_busy[i]);
-        
         cores[i].core_is_last(core_is_last[i]);
-        //bus.core_is_last[i](core_is_last[i]);
         CD.bus_core_is_last[i](core_is_last[i]);
-        //bus.bus_core_is_last[i](bus_core_is_last[i]);
-
         cores[i].core_is_start_address(core_is_start_address[i]);
         CD.core_is_start_address[i](core_is_start_address[i]);
+
+        cores[i].core_start_addr_i(core_start_addr_i[i]);
+        cores[i].core_len_i(core_len_i[i]);
+        cores[i].core_wr(core_wr[i]);
+        CD.core_start_addr_i[i](core_start_addr_i[i]);
+        CD.core_len_i[i](core_len_i[i]);
+        CD.core_wr[i](core_wr[i]);
         
         bus.bus_memory_start_addr_i[i + 1](bus_memory_start_addr_i[i + 1]);
         bus.bus_memory_len_i[i + 1](bus_memory_len_i[i + 1]);
         for (int j = 0; j < BUFFER_SIZE; ++j)
         {
+            cores[i].core_data_i[j](core_data_i[i][j]);
             cores[i].bus_memory_data_i[j](bus_memory_data_i[i + 1][j]);
             bus.bus_memory_data_i[i + 1][j](bus_memory_data_i[i + 1][j]);
+            CD.core_data_i[i][j](core_data_i[i][j]);
         }
         bus.bus_memory_wr[i + 1](bus_memory_wr[i + 1]);
         bus.core_inst(cores[i]);

@@ -22,6 +22,12 @@ public:
     sc_in<bool> cors_is_busy[CORE_COUNT];
     sc_out<bool> bus_core_is_last[CORE_COUNT];
     sc_out<int> core_is_start_address[CORE_COUNT];
+
+    // core data
+    sc_out<int> core_start_addr_i[CORE_COUNT];
+    sc_out<int> core_len_i[CORE_COUNT];
+    sc_out<float> core_data_i[CORE_COUNT][BUFFER_SIZE];
+    sc_out<bool> core_wr[CORE_COUNT];
     
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> bus_cores_inst;
     

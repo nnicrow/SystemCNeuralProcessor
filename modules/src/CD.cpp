@@ -150,6 +150,7 @@ void CD::proccess()
     last_memory_busy_address_ += layers_[layer_count_ - 1];
     core_is_start_address[0].write(last_memory_busy_address_);
     bus_core_is_last[0].write(true);
+
     wait();
     std::vector<float> result = memory_read(address_.back(), layers_[layer_count_ - 1]);
     for (const float i : result)

@@ -12,6 +12,12 @@ public:
     sc_out<bool> core_is_busy;
     sc_in<bool> core_is_last;
     sc_in<int> core_is_start_address;
+
+    // core data
+    sc_in<int> core_start_addr_i;
+    sc_in<int> core_len_i;
+    sc_in<float> core_data_i[BUFFER_SIZE];
+    sc_in<bool> core_wr;
     
     // memory
     sc_out<int> bus_memory_start_addr_i;
