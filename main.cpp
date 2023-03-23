@@ -90,13 +90,14 @@ int sc_main(int argc, char* argv[])
     for (int i = 0; i < CORE_COUNT; ++i)
     {
         cores[i].clk(clk);
-        cores[i].core_is_busy(core_is_busy[i]);
-        bus.core_is_busy[i](core_is_busy[i]);
-        bus.bus_core_is_busy[i](bus_core_is_busy[i]);
-        CD.bus_core_is_busy[i](bus_core_is_busy[i]);
         cores[i].bus_memory_start_addr_i(bus_memory_start_addr_i[i + 1]);
         cores[i].bus_memory_len_i(bus_memory_len_i[i + 1]);
         cores[i].bus_memory_wr(bus_memory_wr[i + 1]);
+        
+        cores[i].core_is_busy(core_is_busy[i]);
+        bus.core_is_busy[i](core_is_busy[i]);
+        CD.cors_is_busy[i](bus_core_is_busy[i]);
+        bus.bus_core_is_busy[i](bus_core_is_busy[i]);
         
         bus.bus_memory_start_addr_i[i + 1](bus_memory_start_addr_i[i + 1]);
         bus.bus_memory_len_i[i + 1](bus_memory_len_i[i + 1]);

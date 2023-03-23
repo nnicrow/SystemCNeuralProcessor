@@ -127,7 +127,7 @@ void CD::proccess()
         wait(2);
         for (int i = 0; i < CORE_COUNT; ++i)
         {
-            while (bus_core_is_busy[i].read())
+            while (cors_is_busy[i].read())
             {
                 wait(CORE_COUNT + 1);
             }

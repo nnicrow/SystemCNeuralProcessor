@@ -43,6 +43,7 @@ public:
     // core
     sc_out<bool> bus_core_is_busy[CORE_COUNT];
     sc_in<bool> core_is_busy[CORE_COUNT];
+    
     sc_port<ICore, 0, SC_ZERO_OR_MORE_BOUND> core_inst;
 
     /*std::vector<float>& read(int start_addr, int len) override;
@@ -51,11 +52,12 @@ public:
     
     bool core_task(int core_num, std::vector<float>& neurons, std::vector<std::vector<float>>& weight, int start_address, bool is_last = false) override;;
     
-    void process();
+    void bus_process();
 
     SC_CTOR(bus)
     {
-        SC_THREAD(process)
+        sc_bind_proxy bus_core_is_busy = *core_is_busy;
+        SC_THREAD(bus_process)
         sensitive << clk.pos();
     }
 

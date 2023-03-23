@@ -8,6 +8,8 @@ void core::control_process()
         {
             wait();
         }
+        core_is_busy.write(is_busy_flag_);
+        wait();
         cout << "core " << core_num_ << " start count" << endl;
 
         if (is_last_flag_)
@@ -66,8 +68,6 @@ bool core::core_task(int core_num, std::vector<float>& neurons, std::vector<std:
         return false;
     }
     is_busy_flag_ = true;
-    core_is_busy.write(is_busy_flag_);
-    wait();
     
     neurons_data_ = neurons;
     weight_data_ = weight;

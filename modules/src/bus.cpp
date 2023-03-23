@@ -17,7 +17,7 @@ bool bus::core_task(int core_num, std::vector<float>& neurons, std::vector<std::
     return core_inst[core_num]->core_task(core_num, neurons, weight, start_address, is_last);
 }
 
-void bus::process()
+void bus::bus_process()
 {
     while (true)
     {
@@ -28,7 +28,6 @@ void bus::process()
             {
                 get_data_from_port(i);
             }
-            bus_core_is_busy[i].write(core_is_busy[i].read());
         }
 
         // если есть что писать, то пишем в память
