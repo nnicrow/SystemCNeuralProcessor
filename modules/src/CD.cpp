@@ -3,6 +3,8 @@
 #include <fstream>
 #include "../../config.h"
 
+
+
 void CD::proccess()
 {
     // read data from file
@@ -113,17 +115,8 @@ void CD::proccess()
 
         memory_address_selection(layers_[layer_num + 1]);
         // распределяем задачи
-        for (int i = 0; i < CORE_COUNT; ++i)
-        {
-            while (cors_is_busy[i].read())
-            {
-                wait();
-            }
-            bus_cores_inst->core_task(i, weight_tasks[i]);
-            core_is_start_address[i].write(last_memory_busy_address_);
-            core_write(neurons, i);
-            last_memory_busy_address_ += tasks[i];
-        }
+
+        core_task(neurons, weight_tasks, tasks);
         wait();
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -174,6 +167,21 @@ void CD::proccess()
         cout << i << endl;
     }
     out_result(result);
+}
+
+void CD::core_task(std::vector<float>& neurons, std::vector<std::vector<std::vector<float>>>& weight_tasks, std::vector<int>& tasks)
+{
+    for (int i = 0; i < CORE_COUNT; ++i)
+    {
+        while (cors_is_busy[i].read())
+        {
+            wait();
+        }
+        bus_cores_inst->core_task(i, weight_tasks[i]);
+        core_is_start_address[i].write(last_memory_busy_address_);
+        core_write(neurons, i);
+        last_memory_busy_address_ += tasks[i];
+    }
 }
 
 void CD::end_write_to_memory(const int len)
