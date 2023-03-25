@@ -23,7 +23,10 @@ public:
     sc_out<int> bus_memory_len_i;
     sc_out<float> bus_memory_data_i[BUFFER_SIZE];
     sc_out<bool> bus_memory_wr;
-    
+
+
+
+    int coreTimeAll();
     // функция которая будет получать данные весов и которая будет получать данные нейронов
     void control_process();
 

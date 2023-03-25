@@ -1,4 +1,5 @@
 ﻿#include "../core.h"
+#include "sys/utime.h"
 
 void core::control_process()
 {
@@ -7,14 +8,19 @@ void core::control_process()
         while (!is_busy_flag_)
         {
             wait();
+            
         }
         wait();
         core_is_busy.write(is_busy_flag_);
         is_last_flag_ = core_is_last.read();
         start_address_ = core_is_start_address.read();
         neurons_data_ = core_read();
+
         if (core_is_last.read())
             cout << "last core count" << endl;
+
+     //   cout << "core " << core_num_ << " coreTime = " << sc_time_stamp() << endl;
+        
         cout << "core " << core_num_ << " start count" << endl;
 
         if (is_last_flag_)
@@ -42,7 +48,9 @@ void core::control_process()
         is_busy_flag_ = false;
         core_is_busy.write(is_busy_flag_);
         wait();
+       
     }
+    
 }
 
 std::vector<float> core::core_read()
@@ -63,6 +71,7 @@ std::vector<float> core::core_read()
     }
     return data;
 }
+
 
 void core::memory_write(const std::vector<float>& data)
 {

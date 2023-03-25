@@ -1,9 +1,12 @@
 ﻿#include "../CD.h"
 
 #include <fstream>
+
+#include "../core.h"
 #include "../../config.h"
 
-
+double core_time = 0;
+double core_time_tmp = 0;
 
 void CD::proccess()
 {
@@ -116,7 +119,13 @@ void CD::proccess()
         memory_address_selection(layers_[layer_num + 1]);
         // распределяем задачи
 
+
+        // yfxf
+        core_time_tmp = sc_time_stamp().to_double();
         core_task(neurons, weight_tasks, tasks);
+        core_time += sc_time_stamp().to_double() - core_time_tmp;
+
+        // rjytx
         wait();
         for (int i = 0; i < CORE_COUNT; ++i)
         {
@@ -133,7 +142,7 @@ void CD::proccess()
     }
 
     std::vector<float> neurons = memory_read(address_.back(), layers_[layer_count_ - 1]);
-    
+
     std::vector<std::vector<float>> weight_task;
     while (cors_is_busy[0].read())
     {
@@ -169,7 +178,8 @@ void CD::proccess()
     out_result(result);
 }
 
-void CD::core_task(std::vector<float>& neurons, std::vector<std::vector<std::vector<float>>>& weight_tasks, std::vector<int>& tasks)
+void CD::core_task(std::vector<float>& neurons, std::vector<std::vector<std::vector<float>>>& weight_tasks,
+                   std::vector<int>& tasks)
 {
     for (int i = 0; i < CORE_COUNT; ++i)
     {
@@ -288,4 +298,6 @@ void CD::out_result(std::vector<float>& data)
 
     cout << endl;
     cout << "Result is " << ToString(e) << endl;
+    cout << "Core time in % = " << core_time / sc_time_stamp().to_double() << endl;
+    cout << "Core time in % per core = " << core_time / sc_time_stamp().to_double() / CORE_COUNT << endl;
 }
